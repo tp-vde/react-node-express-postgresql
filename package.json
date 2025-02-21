@@ -1,0 +1,52 @@
+{
+  "name": "root",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "18 || 22"
+  },
+  "scripts": {
+    "start": "concurrently \"yarn start:app --delay 5\"  \"yarn start:back\"",
+    "start:back": "yarn workspace backend start",
+    "start:app": "yarn workspace app start",
+    "lint:fix": "yarn workspace backend lint:fix",
+    "all:start": "yarn tsc && yarn lint && yarn start",
+    "tsc": "yarn workspace backend tsc && yarn workspace app tsc",
+    "lint": "yarn workspace backend lint && yarn workspace app lint",
+    "test": "mocha --exit tests/*"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "@typescript-eslint/eslint-plugin": "^8.24.0",
+    "@typescript-eslint/parser": "^8.24.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.20.0",
+    "eslint-plugin-n": "^17.15.1",
+    "eslint-plugin-node": "^11.1.0",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.18.2",
+    "knex": "^3.1.0",
+    "pg": "^8.13.1",
+    "sequelize": "^6.37.5",
+    "typescript": "^5.7.3"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "commonjs",
+      "outDir": "./dist",
+      "rootDir": ".",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "isolatedModules": true
+    },
+    "include": ["**/*.ts", "packages/backend/src/router.ts.old", "packages/backend/src/routes/userRoutes.ts.old"],
+    "exclude": ["node_modules"]
+  }

@@ -1,0 +1,86 @@
+import client from '../database';
+import Router from 'express-promise-router';
+import cors from 'cors';
+import { UserRow } from '@/types/types';
+
+const router = Router();
+
+require('dotenv').config();
+router.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'HEAD', 'PATCH', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization'], 
+}));
+
+export const TABLE = 'vde_users';
+/**
+ * Test de connexion à la base de données
+ */
+client.raw('SELECT 1')
+  .then(() => {
+    console.log('Connexion à la base de données réussie !');
+  })
+  .catch((err) => {
+    console.error('Erreur de connexion à la base de données :', err);
+});
+
+router.get('/', (_req, res) => {
+  res.send('Bienvenue sur l\'API de mon projet');
+});
+
+/**
+ * affiche tout les table users"
+ */
+router.get('/users', async (_req, res) => {
+  try {
+    const users = await client<UserRow>(TABLE).select('*');
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur lors de la récupération des utilisateurs' });
+  }
+});
+
+
+/**
+ * Create a user :UPSERT (combinaison de UPDATE et INSERT)
+ */
+router.post('/users', async (req, res) => {
+  const { name, email } = req.body;
+  try {
+      await client(TABLE)
+        .insert({ name, email})
+        .onConflict('email')
+        .merge();
+      res.status(200).json({ message: 'User upserted successfully' });
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+);
+
+/**
+ * Supprimer un utilisateur par son ID
+ */
+router.delete('/users/:id', async (req: any, res: any) => {
+
+  const { id } = req.params; 
+  const userId = Number(id);
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: 'ID invalide' });
+  }
+
+  try {
+    const deleted = await client(TABLE).where({ id: userId }).del();
+    if (deleted) {
+      res.status(200).json({ message: `Utilisateur ${userId} supprimé avec succès` });
+    } else {
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+
+});
+
+export default router ;
