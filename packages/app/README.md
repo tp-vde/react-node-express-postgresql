@@ -44,3 +44,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Redémarrer TypeScript Server 
+1- Ctrl+Shift+P => Ouvrez la Command Palette (Ctrl+Shift+P ou Cmd+Shift+P sur macOS).
+2- Recherchez et sélectionnez `TypeScript: Restart TS server`.

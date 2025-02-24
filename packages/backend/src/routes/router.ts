@@ -12,7 +12,7 @@ export function createRouter(): express.Router {
   router.use(express.json());
 
   router.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000','http://localhost:3001' ],
     methods: ['GET', 'HEAD', 'PATCH', 'POST', 'PUT', 'DELETE'], 
     allowedHeaders: ['Content-Type', 'Authorization'], 
   }));

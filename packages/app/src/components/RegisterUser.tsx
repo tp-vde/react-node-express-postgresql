@@ -49,12 +49,12 @@ export default function RegisterUser() {
       fetchUsers();
     };
   
-    // const handleDeleteUser = async (id: number) => {
-    //   await fetch(`http://localhost:7007/api/users/${id}`, {
-    //     method: 'DELETE',
-    //   });
-    //   fetchUsers();
-    // };
+    const handleDeleteUser = async (id: number) => {
+      await fetch(`http://localhost:7007/api/users/${id}`, {
+        method: 'DELETE',
+      });
+      fetchUsers();
+    };
 
     
   return (
@@ -87,7 +87,7 @@ export default function RegisterUser() {
           Create User
         </Button>
       </form>
-      {/* <ul>
+      <ul>
         {user.map((user) => (
           <li key={user.id}>
             <h3>{user.name}</h3>
@@ -95,7 +95,7 @@ export default function RegisterUser() {
             <button onClick={() => handleDeleteUser(user.id!)}>Delete</button>
           </li>
         ))}
-      </ul> */}
+      </ul>
       <br />
     </div>
   );

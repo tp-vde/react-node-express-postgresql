@@ -112,11 +112,16 @@ La création de nouveaux fichiers de migration peut être réalisée en exécuta
 !!! 
 
 <!-- ///////////////////////////
-
-rm -rf node_modules yarn.lock  # (Sous Linux/macOS) 
-rmdir /s /q node_modules & del package-lock.json  # (Sous Windows CMD)
+Erreur : exec /app/entrypoint.sh: no such file or directory => assurez-vous que le fichier entrypoint.sh utilise des fins de ligne Unix (LF) et non Windows (CRLF).
+yarn cache clean --force
+rm -rf node_modules yarn.lock  # (Sous Linux/macOS)
+chmod 755 nodce_modules
+rmdir /s /q node_modules & del yarn.lock  # (Sous Windows CMD)
 yarn install
+
+chmod -R 755 node_modules
 
 Les droits d’exécution : chmod +x packages/backend/entrypoint.sh 
 "start": "cross-env PORT=3000 react-scripts start",
+
 -->
