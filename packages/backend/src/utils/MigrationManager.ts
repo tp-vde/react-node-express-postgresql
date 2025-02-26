@@ -8,6 +8,8 @@ export class MigrationManager {
 
   constructor(options: {dbName: string}  ) {
     this.dbName = options.dbName;
+
+
     this.knexInstance = knex(config.development);
   }
 
@@ -26,6 +28,16 @@ export class MigrationManager {
   }
 
   public async migrate(): Promise<void> {
+    
+    const knexCnx = {
+      ...config.development,
+      client: 'pg',
+      connection: {
+        database: '',
+      }
+    }
+
+
     await this.knexInstance.migrate.latest();
     console.log('Migrations run successfully.');
   }

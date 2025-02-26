@@ -2,7 +2,7 @@ import { UserRow } from '@/types/types';
 import dbClient from '../database';
 
 
-const TABLE = 'vde_users';
+const TABLE = 'vde_students';
 
 export class UserService {
 

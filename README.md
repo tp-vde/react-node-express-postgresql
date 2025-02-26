@@ -125,3 +125,8 @@ Les droits d’exécution : chmod +x packages/backend/entrypoint.sh
 "start": "cross-env PORT=3000 react-scripts start",
 
 -->
+
+Taches :
+
+- Connection automatique db sur postgres                        ----> Salma / Samir
+- 
