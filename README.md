@@ -106,9 +106,9 @@ Dans le terminal VsCode pour miger les scripts de la bdd avec la commande : `yar
 
 
 # Migrations
-La commande `yarn knex init -x ts` (l'option -x ts pour le typescript) permet de creer le fichier de configuration knexfile.ts qui contient nos différentes configurations de la base de données. Une fois que vous avez un fichier knexfile.js/.ts, vous pouvez utiliser l'outil de migration pour créer des fichiers de migration vers le répertoire spécifié (migrations par défaut). 
+La commande `yarn knex init` (l'option -x ts pour le typescript) permet de creer le fichier de configuration knexfile.ts qui contient nos différentes configurations de la base de données. Une fois que vous avez un fichier knexfile.js/.ts, vous pouvez utiliser l'outil de migration pour créer des fichiers de migration vers le répertoire spécifié (migrations par défaut). 
 !!! Supprimer le bloc `sqlite3` avant d'exécuter la nouvellemigration.
-La création de nouveaux fichiers de migration peut être réalisée en exécutant la commande `yarn knex migrate:make table_name -x ts`. 
+La création de nouveaux fichiers de migration peut être réalisée en exécutant la commande `yarn knex migrate:make table_name`. 
 !!! 
 
 <!-- ///////////////////////////

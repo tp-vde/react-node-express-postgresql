@@ -12,6 +12,6 @@
       "resolveJsonModule": true,
       "isolatedModules": true
     },
-    "include": ["**/*.ts", "packages/backend/src/*", "packages/backend/migrations/20250225141020_vde_students.js"],
+    "include": ["**/*.ts", "packages/backend/src/*"],
     "exclude": ["node_modules"]
   }

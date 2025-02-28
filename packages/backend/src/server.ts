@@ -2,7 +2,7 @@ import app from "./app";
 import { MigrationManager } from "./utils/MigrationManager";
 
 const PORT = process.env.BACKEND_PORT || 7007;
-const databaseName = 'your_db_name';
+const databaseName = 'vde_database';
 
 async function startServer() {
   const migrationManager = new MigrationManager({ dbName: databaseName}); 
@@ -10,7 +10,7 @@ async function startServer() {
   try {
     await migrationManager.createDatabaseIfNotExists();
     await migrationManager.migrate();
-    // await migrationManager.close();
+    await migrationManager.close();
 
     app.listen(PORT, (err: any) => {
       if(err) throw new Error(`Erreur :: ${err}` );

@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex';
-import config from "../../knexfile";
+import config from "./knexConnect";
 
 
 export class MigrationManager {
@@ -8,9 +8,15 @@ export class MigrationManager {
 
   constructor(options: {dbName: string}  ) {
     this.dbName = options.dbName;
-
-
-    this.knexInstance = knex(config.development);
+    this.knexInstance = knex({
+      ...config.development,
+      client: 'pg',
+      connection: {
+        ...(config.development.connection as object), 
+        database: this.dbName, 
+        password: 'password'
+      },
+    });
   }
 
   public async createDatabaseIfNotExists(): Promise<void> {
@@ -28,16 +34,6 @@ export class MigrationManager {
   }
 
   public async migrate(): Promise<void> {
-    
-    const knexCnx = {
-      ...config.development,
-      client: 'pg',
-      connection: {
-        database: '',
-      }
-    }
-
-
     await this.knexInstance.migrate.latest();
     console.log('Migrations run successfully.');
   }

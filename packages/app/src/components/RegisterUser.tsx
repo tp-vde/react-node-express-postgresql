@@ -6,6 +6,11 @@ import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
 import { VdeData } from '../api/types';
 
+
+/**
+ * 
+ * @returns 
+ */
 export default function RegisterUser() {
   // const [name, setName] = useState('');
   // const [email, setEmail] = useState('');

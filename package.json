@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "concurrently \"yarn start:app --delay 5\"  \"yarn start:back\"",
-    "start:back": "yarn workspace backend start",
+    "start:back": "yarn workspace backend start:watch",
     "start:app": "yarn workspace app start",
     "lint:fix": "yarn workspace backend lint:fix",
     "all:start": "yarn tsc && yarn lint && yarn start",
