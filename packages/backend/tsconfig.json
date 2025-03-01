@@ -14,7 +14,7 @@
       "baseUrl": ".", //Répertoire de base pour résoudre les modules.
       "paths": { //Mappage des chemins d'importation personnalisés.
         // "*": ["node_modules/*", ],
-        "@/*": ["./src/*","./*"]
+        "../*": ["./src/*","./*"]
       }
     },
     //Options pour la vérification de type

@@ -1,9 +1,17 @@
-import { UserRow } from '@/types/types';
-import dbClient from '../database';
-
+import { UserRow } from '../types/types';
+import knex from 'knex';
+import config from '../utils/knexConnect';
 
 const TABLE = 'vde_students';
-
+const dbClient = knex({
+  ...config.development,
+  client: 'pg',
+  connection: {
+    ...(config.development.connection as object), 
+    database: 'vde_database', 
+    password: 'password'
+  },
+});
 export class UserService {
 
   async createUser(user: UserRow): Promise<void> {
@@ -11,6 +19,7 @@ export class UserService {
   }
 
   async getUsers(): Promise<UserRow[]> {
+    console.log("dbClient.queryBuilder::", dbClient.client.connectionSettings);
     const users: UserRow[] = await dbClient<UserRow>(TABLE).select("*");
     return users.map((row) => ({
       id: row.id,
