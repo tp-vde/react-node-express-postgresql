@@ -30,7 +30,7 @@ services:
       POSTGRES_NAME: postgres
     restart: always
     ports:
-      - "7007:7007"
+      - "5000:7007"
     depends_on:
       - db
     # networks:
