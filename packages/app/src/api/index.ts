@@ -25,7 +25,6 @@ export class VdeApiClient {
   async pushUser(user: VdeData): Promise<boolean> {
 
     const url = `${this.baseUrl}/api/users`;
-    console.log('pushUser::', url)
     const response = await fetch(url, {
         method: 'POST',
         headers: {

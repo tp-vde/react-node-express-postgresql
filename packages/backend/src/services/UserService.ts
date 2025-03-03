@@ -19,7 +19,6 @@ export class UserService {
   }
 
   async getUsers(): Promise<UserRow[]> {
-    console.log("dbClient.queryBuilder::", dbClient.client.connectionSettings);
     const users: UserRow[] = await dbClient<UserRow>(TABLE).select("*");
     return users.map((row) => ({
       id: row.id,

@@ -5,10 +5,10 @@
   "main": "server.ts",
   "scripts": {
     "test": "mocha --exit tests/*",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
+    "tsc": "tsc",
+    "tsc:watch": "tsc --watch",
     "start": "nodemon dist/src/server.js",
-    "start:watch": "yarn build && concurrently \"yarn build:watch\" \"yarn start\"",
+    "start:watch": "yarn tsc && concurrently \"yarn tsc:watch\" \"yarn start\"",
     "dev": "ts-node ./server.ts",
     "lint": "eslint **/*.ts",
     "lint:fix": "eslint **/*.ts --fix",

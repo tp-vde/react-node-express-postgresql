@@ -1,8 +1,12 @@
-import app from "./app";
 import { MigrationManager } from "./utils/MigrationManager";
+import express from 'express';
+import { createRouter } from './routes/router';
 
 const PORT = process.env.BACKEND_PORT || 7007;
 const databaseName = 'vde_database';
+
+const app = express();
+app.use('/api', createRouter());
 
 async function startServer() {
   const migrationManager = new MigrationManager({ dbName: databaseName}); 
