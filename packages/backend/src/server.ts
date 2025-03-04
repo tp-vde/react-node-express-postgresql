@@ -1,6 +1,7 @@
 import { MigrationManager } from "./utils/MigrationManager";
 import express from 'express';
 import { createRouter } from './routes/router';
+import logger from '../src/utils/logger';
 
 const PORT = process.env.BACKEND_PORT || 7007;
 const databaseName = 'vde_database';
@@ -18,7 +19,7 @@ async function startServer() {
 
     app.listen(PORT, (err: any) => {
       if(err) throw new Error(`Erreur :: ${err}` );
-      console.log(`Serveur démarré sur le port ${PORT}`);
+      logger.info(`Serveur démarré sur le port ${PORT}`);
     });
 
   } catch (error) {
