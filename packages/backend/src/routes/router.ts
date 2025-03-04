@@ -3,6 +3,8 @@ import Router from 'express-promise-router';
 import { UserService } from '../services';
 import { UserRow } from '../types/types';
 import cors from 'cors';
+import ConfigSources from '../config/ConfigSources';
+import { ConfigReader } from '../config/ConfigReader';
 
 export function createRouter(): express.Router {
 
@@ -11,11 +13,10 @@ export function createRouter(): express.Router {
   const router = Router();
   router.use(express.json());
 
-  router.use(cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'HEAD', 'PATCH', 'POST', 'PUT', 'DELETE'], 
-    allowedHeaders: ['Content-Type', 'Authorization'], 
-  }));
+  const config = ConfigSources.defaultForTargets();
+  const packagesConfig = new ConfigReader(config);
+  
+  router.use(cors(packagesConfig.getConfig('backend.cors').get()));
 
   router.get('/health', (_, response) => {
     response.json({ status: 'ok' })
