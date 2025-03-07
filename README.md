@@ -124,4 +124,7 @@ chmod -R 755 node_modules
 Les droits d’exécution : chmod +x packages/backend/entrypoint.sh 
 "start": "cross-env PORT=3000 react-scripts start",
 
+
+Tache : 
+Sécurisez l’accès à une application en utilisant l’authentification et l'autorisation.
 -->

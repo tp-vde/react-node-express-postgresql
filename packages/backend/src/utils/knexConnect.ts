@@ -1,8 +1,9 @@
 // Update with your config settings.
 // yarn knex migrate:make isoset_vde
 import { Knex } from "knex";
+import dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
