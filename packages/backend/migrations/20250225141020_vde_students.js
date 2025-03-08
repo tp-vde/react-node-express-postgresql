@@ -7,10 +7,6 @@ exports.up = async function up(knex) {
     return knex.schema.createTable('vde_students' , table => {
       table.comment('Table des etudiants');
       table
-           .increments('id')
-           .notNullable()
-           .comment('Identifiant unique');
-      table
           .string('code')
           .primary()
           .notNullable()

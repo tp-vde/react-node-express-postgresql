@@ -23,16 +23,6 @@ import dayjs from "dayjs";
 import { VdeApiClient } from "../api";
 import { UserRow } from "../api/types";
 
-// interface UserRow {
-//   id?: string;
-//   code: string;
-//   name: string;
-//   first_name: string;
-//   email: string;
-//   phone: string;
-//   speciality: string;
-//   entry_at: dayjs.Dayjs | null;
-// }
 
 const initialFormData: UserRow = {
   code: "",
@@ -42,6 +32,7 @@ const initialFormData: UserRow = {
   phone: "",
   speciality: "",
   entry_at: null,
+  first_departure_mission_at: null,
 };
 
 const apiService = new VdeApiClient("http://localhost:7007");
@@ -51,7 +42,7 @@ function RegisterUser() {
   const [rows, setRows] = useState<UserRow[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -74,10 +65,17 @@ function RegisterUser() {
     }));
   };
 
-  const handleDateChange = (date: dayjs.Dayjs | null) => {
+  const handleDateEntyChange = (date: dayjs.Dayjs | null) => {
     setFormData((prevState) => ({
       ...prevState,
       entry_at: date ? date.toISOString() : null,
+    }));
+  };
+
+  const handleDateMissionChange = (date: dayjs.Dayjs | null) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      first_departure_mission_at: date ? date.toISOString() : null,
     }));
   };
 
@@ -97,24 +95,17 @@ function RegisterUser() {
     }
   };
 
-  //     const rowToEdit = rows.find(row => row.id === id);
-  //     if (rowToEdit) {
-  //     setFormData({...rowToEdit, entry_at: dayjs(rowToEdit.entry_at)});
-  //     setSelectedId(id);
-  //     setEditMode(true);
-  //     }
-  // };
-  const handleEdit = (id: number) => {
-    const rowToEdit = rows.find((row) => row.id === id);
+  const handleEdit = (code: string) => {
+    const rowToEdit = rows.find((row) => row.code === code);
     if (rowToEdit) {
       setFormData(rowToEdit);
-      setSelectedId(id);
+      setSelectedId(code);
       setEditMode(true);
     }
   };
 
-  const handleDelete = (id: number) => {
-    setSelectedId(id);
+  const handleDelete = (code: string) => {
+    setSelectedId(code);
     setOpenDialog(true);
   };
 
@@ -159,10 +150,10 @@ function RegisterUser() {
       width: 130,
       renderCell: (params: GridRenderCellParams) => (
         <Box>
-          <IconButton onClick={() => handleEdit(params.row.id)}>
+          <IconButton onClick={() => handleEdit(params.row.code)}>
             <EditIcon color="primary" />
           </IconButton>
-          <IconButton onClick={() => handleDelete(params.row.id)}>
+          <IconButton onClick={() => handleDelete(params.row.code)}>
             <DeleteIcon color="error" />
           </IconButton>
         </Box>
@@ -238,7 +229,7 @@ function RegisterUser() {
               <DatePicker
                 label="Date d'entrée"
                 value={formData.entry_at ? dayjs(formData.entry_at) : null}
-                onChange={handleDateChange}
+                onChange={handleDateEntyChange}
                 slotProps={{
                   textField: {
                     fullWidth: true,
@@ -248,9 +239,9 @@ function RegisterUser() {
                 }}
               />
               <DatePicker
-                label="Date de mission"
-                value={formData.entry_at ? dayjs(formData.entry_at) : null}
-                onChange={handleDateChange}
+                label="Date début de mission"
+                value={formData.first_departure_mission_at ? dayjs(formData.first_departure_mission_at) : null}
+                onChange={handleDateMissionChange}
                 slotProps={{
                   textField: {
                     fullWidth: true,
@@ -266,7 +257,7 @@ function RegisterUser() {
                 fullWidth
                 sx={{ mt: 2 }}
               >
-                {editMode ? "Modifier" : "Envoyer"}
+                {editMode ? "Modifier" : "Enregistrer"}
               </Button>
             </Stack>
           </Box>
@@ -279,6 +270,7 @@ function RegisterUser() {
             <DataGrid
               rows={rows}
               columns={columns}
+              getRowId={(row) => row.code}
               pageSizeOptions={[5, 10, 25]}
               initialState={{
                 pagination: {

@@ -1,7 +1,6 @@
 import winston from "winston";
 
 export interface UserRow {
-  id?: number;
   code: string;
   name: string;
   first_name: string;

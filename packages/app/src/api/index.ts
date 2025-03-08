@@ -54,7 +54,7 @@ export class VdeApiClient {
     return true;
 };
 
-async deleteUser(userId: number): Promise<boolean> {
+async deleteUser(userId: string): Promise<boolean> {
   const queryString = new URLSearchParams(userId.toString());
   const fetchUrl = `${this.backendUrl}/api/users?${queryString}`;
   const response = await fetch(fetchUrl, {

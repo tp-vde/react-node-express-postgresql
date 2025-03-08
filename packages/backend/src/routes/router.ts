@@ -39,6 +39,7 @@ export function createRouter( options: RouterOptions): express.Router {
 
   router.post('/users', async (req, res) => {
     try {
+      console.log('req.body::', req.body)
         await userService.createUser(req.body);
         res.status(201).json({ message: 'User upserted successfully' });
         logger.info(`User upserted successfully :: ${req.query.first_name} ${req.query.name}`);
