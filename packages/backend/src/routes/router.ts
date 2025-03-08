@@ -4,6 +4,7 @@ import { UserService } from '../services';
 import { UserRow } from '../types/types';
 import { corsMiddleware } from '../utils/cors';
 import * as winston from 'winston';
+import bodyParser from 'body-parser';
 
 export type RouterOptions = {
   logger: winston.Logger;
@@ -18,6 +19,8 @@ export function createRouter( options: RouterOptions): express.Router {
   const router = Router();
   router.use(express.json());
   router.use(corsMiddleware());
+  router.use(bodyParser.urlencoded({ extended: false }));
+  router.use(bodyParser.json());
 
   router.get('/health', (_, response) => {
     console.log("user::");
@@ -38,25 +41,25 @@ export function createRouter( options: RouterOptions): express.Router {
     try {
         await userService.createUser(req.body);
         res.status(201).json({ message: 'User upserted successfully' });
-        logger.info(`User upserted successfully :: ${req.body.first_name} ${req.body.name}`);
+        logger.info(`User upserted successfully :: ${req.query.first_name} ${req.query.name}`);
       } catch (err: any) {
         res.status(500).json({ message: err.message });
       }
     }
   );
 
-  router.get('/users/:userId', async (req, res) => {
-    res.json(await userService.getUserById(req.params.userId as string));
+  router.get('/usersById', async (req, res) => {
+    res.json(await userService.getUserById(req.query.userId as string));
   });
 
 
-  router.delete('/users/:userId', async (req, res) => {
+  router.delete('/users', async (req, res) => {
     try {
-      await userService.deleteUser(req.params.userId);
+      await userService.deleteUser(req.query.userId as string);
       res.status(204).send({ message: 'User delete successfully' });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
-      logger.info(`Unable to get metadata for '${req.params.userId}' with error ${err.messag}`);
+      logger.info(`Unable to get metadata for '${req.query.userId}' with error ${err.messag}`);
     }
   });
 

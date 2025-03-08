@@ -1,15 +1,15 @@
 import fetch from 'cross-fetch';
-import { VdeData } from './types';
+import { UserRow } from './types';
 
 export class VdeApiClient {
-  private baseUrl: string;
+  private backendUrl: string;
 
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
+  constructor(backendUrl: string) {
+    this.backendUrl = backendUrl;
   }
 
-  async getUserData(): Promise<VdeData[]> {
-    const response = await fetch(`${this.baseUrl}/api/users`, {
+  async getUserData(): Promise<UserRow[]> {
+    const response = await fetch(`${this.backendUrl}/api/users`, {
       method: "GET",
       headers: {
         "Content-type": "application/json",
@@ -18,14 +18,30 @@ export class VdeApiClient {
     if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-    const data: VdeData[] = await response.json();
+    const data: UserRow[] = await response.json();
     return data;
   };
 
-  async pushUser(user: VdeData): Promise<boolean> {
+  async getUserById(userId: string): Promise<UserRow[]> {
+    const queryString = new URLSearchParams({userId});
+    const fetchUrl = `${this.backendUrl}/api/users?${queryString}`;
+    const response = await fetch(fetchUrl, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+    const data: UserRow[] = await response.json();
+    return data;
+  };
 
-    const url = `${this.baseUrl}/api/users`;
-    const response = await fetch(url, {
+
+  async pushUser(user: UserRow): Promise<boolean> {
+    const fetchUrl = `${this.backendUrl}/api/users`;
+    const response = await fetch(fetchUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,4 +53,20 @@ export class VdeApiClient {
     }
     return true;
 };
+
+async deleteUser(userId: number): Promise<boolean> {
+  const queryString = new URLSearchParams(userId.toString());
+  const fetchUrl = `${this.backendUrl}/api/users?${queryString}`;
+  const response = await fetch(fetchUrl, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+  });
+  if (!response.ok) {
+      throw Error('Error');
+  }
+  return true;
+};
+
 };

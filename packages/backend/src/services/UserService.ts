@@ -30,6 +30,7 @@ export class UserService {
   async getAllUsers(): Promise<UserRow[]> {
     const users: UserRow[] = await dbClient<UserRow>(TABLE).select("*");
     return users.map((row) => ({
+      id: row.id,
       code: row.code,
       name: row.name,
       first_name: row.first_name,
