@@ -1,5 +1,6 @@
 app:
-  title: Scaffolded Backstage App
+  title: Student Management System
+  version: 1.0.0
   baseUrl: http://localhost:3000
   feature:
     useAuth: false
@@ -30,6 +31,26 @@ backend:
       port: 5432
       user: postgres
       password: postgres
+  auth:
+  # dangerouslyDisableDefaultAuthPolicy: true
+  #   keys:
+  #     - secret: ${BACKEND_SECRET}
+  issuer: https://accounts.google.com
+  clientId: your-client-id
+  clientSecret: your-client-secret
+  callbackUrl: http://localhost:3000/auth/callback
+  scopes:
+    - openid
+    - profile
+    - email
+
+  roles:
+    - ADMIN
+    - USER
+    - GUEST
+  # jwt:
+  #   secret: your-jwt-secret
+  #   expiresIn: 1h
 
 proxy:
   endpoints:

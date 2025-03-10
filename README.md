@@ -126,5 +126,12 @@ Les droits d’exécution : chmod +x packages/backend/entrypoint.sh
 
 
 Tache : 
-Sécurisez l’accès à une application en utilisant l’authentification et l'autorisation.
+1- Sécurisez l’accès à une application en utilisant l’authentification et l'autorisation.
+2- Création de la Table d'administration pour gerer les accès à la page d'acceuil :
+    - ID => générer avec UUID
+    - Nom => nom de l'utilisateur
+    - Prenom
+    - Email
+    - Role : {'user', 'administrateur'} => enum
+    - Password
 -->

@@ -6,6 +6,12 @@
 exports.up = async function up(knex) {
     return knex.schema.createTable('vde_students' , table => {
       table.comment('Table des etudiants');
+    //   table
+    //        .uuid('id')
+    //        .primary()
+    //        .notNullable()
+    //        .defaultTo(db.raw('gen_random_uuid()'))
+    //        .comment('Identifiant unique');
       table
           .string('code')
           .primary()
@@ -45,6 +51,7 @@ exports.up = async function up(knex) {
           .notNullable()
           .defaultTo(knex.fn.now())
           .comment('Date récente à laquelle les données de l\'étudiant ont été actualisées');
+      table.string('role').notNullable().defaultTo('USER');
       table.index(['code'], 'vde_students_code_idx');
       table.unique(['code', 'email'], {
           indexName: 'vde_students_unique_idx',

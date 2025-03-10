@@ -14,8 +14,6 @@ import {
   DialogActions,
 } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -83,9 +81,9 @@ function RegisterUser() {
     e.preventDefault();
     try {
       if (editMode && selectedId) {
-        await apiService.pushUser(formData as UserRow);
+        await apiService.pushUser(formData);
       } else {
-        await apiService.pushUser(formData as UserRow);
+        await apiService.pushUser(formData);
       }
       fetchUsers();
       setFormData(initialFormData);
@@ -162,7 +160,6 @@ function RegisterUser() {
   ];
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom align="center">
@@ -294,7 +291,6 @@ function RegisterUser() {
           </DialogActions>
         </Dialog>
       </Container>
-    </LocalizationProvider>
   );
 }
 

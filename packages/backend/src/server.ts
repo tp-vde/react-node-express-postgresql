@@ -7,6 +7,7 @@ import { readHttpServerOptions } from "./config/hostConfig";
 import { loggerService } from "./types/types";
 import bodyParser from 'body-parser';
 
+
 const config = new ConfigReader(fileConfig());
 const { listen: { port: listenPort } } = readHttpServerOptions(config.getConfig('backend'));
 
