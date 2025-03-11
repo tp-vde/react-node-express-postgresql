@@ -111,6 +111,9 @@ La commande `yarn knex init` (l'option -x ts pour le typescript) permet de creer
 La création de nouveaux fichiers de migration peut être réalisée en exécutant la commande `yarn knex migrate:make table_name`. 
 !!! 
 
+
+## Generate a JWT Secret : 
+Le lien `https://jwtsecret.com/generate` permet de generer une Clé secrète pour JWT
 <!-- ///////////////////////////
 Erreur : exec /app/entrypoint.sh: no such file or directory => assurez-vous que le fichier entrypoint.sh utilise des fins de ligne Unix (LF) et non Windows (CRLF).
 yarn cache clean --force
@@ -128,10 +131,23 @@ Les droits d’exécution : chmod +x packages/backend/entrypoint.sh
 Tache : 
 1- Sécurisez l’accès à une application en utilisant l’authentification et l'autorisation.
 2- Création de la Table d'administration pour gerer les accès à la page d'acceuil :
-    - ID => générer avec UUID
+    - ID => number
     - Nom => nom de l'utilisateur
     - Prenom
     - Email
-    - Role : {'user', 'administrateur'} => enum
+    - Role : {'1', '2', '3'} => enum
     - Password
+    - created_at, 
+    - updated_at
+
+
+Table de role
+id, name
+
+1- user
+2- moderator
+3- admin
+
+Table user_roles
+role_id, user_id
 -->

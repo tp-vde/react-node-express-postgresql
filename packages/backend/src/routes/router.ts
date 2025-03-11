@@ -1,12 +1,12 @@
-import express from "express";
+import express , { Request, Response } from "express";
 import Router from "express-promise-router";
 import { UserService } from "../services";
 import { UserRow } from "../types/types";
 import { corsMiddleware } from "../utils/cors";
 import * as winston from "winston";
 import bodyParser from "body-parser";
-import authMiddleware from "./authMiddleware";
-import { SignJWT } from "jose";
+import { authMiddleware, generateToken } from "./authMiddleware";
+import * as jwt from "jose";
 import { config } from "../config";
 
 export type RouterOptions = {
@@ -25,46 +25,31 @@ export function createRouter(options: RouterOptions): express.Router {
   router.use(bodyParser.urlencoded({ extended: false }));
   router.use(bodyParser.json());
 
-  router.get("/health", (_, response) => {
-    response.json({ status: "ok" });
+  router.get("/health", (_, res) => {
+    res.json({ status: "ok" });
   });
 
-  /**
-   * Fonction pour générer un token JWT
-   * @param user
-   * @param alg : Algorithme de signature
-   * @param jwtSecret : Signature
-   * @param jwtExpiresIn : Durée de validité
-   * @returns
-   */
-  const generateToken = async (user: {
-    id: number;
-    email: string;
-    password: string;
-  }) => {
-    return await new SignJWT({ id: user.id, email: user.email })
-      .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime(config.jwtExpiresIn)
-      .sign(new TextEncoder().encode(config.jwtSecret));
-  };
+  router.get("/", (_, res) => {
+    res.json({ message: "Bienvenu à VDE !" });
+  });
 
   // Simuler une base de données (Ex : utilisateur fictif)
   const users = [
-    { id: 1, email: "user@example.com", password: "password123" },
-    { id: 2, email: "user2@example.com", password: "password123" },
-    { id: 3, email: "user3@example.com", password: "password123" }];
+    { id: 1, username: "user1", email: "user1@example.com", password: "password1" , role: "admin"},
+    { id: 2, username: "user2", email: "user2@example.com", password: "password2" , role: "user"},
+  ];
 
   /**
-   * Route d'inscription
+   * Route d'inscription des utilisateurs en base
    */
-  router.post("/register", (req: any, res: any) => {
-    const { email, password } = req.body;
+  router.post("/register", async (req: Request, res: Response): Promise<any>  => {
+    const { username, email, password, role } = req.body;
 
     if (users.some((user) => user.email === email)) {
       return res.status(400).json({ message: "Utilisateur déjà existant" });
     }
 
-    const newUser = { id: 12345, email, password };
+    const newUser = { id: 12345, username, email, password, role };
     users.push(newUser);
     res.status(201).json({ message: "Utilisateur créé avec succès" });
   });
@@ -84,15 +69,26 @@ export function createRouter(options: RouterOptions): express.Router {
     res.json({ message: "Connexion réussie", token });
   });
 
+  // Route protégée pour les admins
+  router.get('/admin',  authMiddleware(['admin']), (_req, res) => {
+    res.json({ message: 'Bienvenue, admin !' });
+  });
+
+  // Route protégée pour les utilisateurs
+  router.get('/user', authMiddleware(['user', 'admin']), (_req, res) => {
+    res.json({ message: 'Bienvenue, utilisateur !cx faddddddminnnn' });
+  });
+
   // Route protégée : accès seulement si l'utilisateur est authentifié
-  router.get("/profile", authMiddleware, (req: any, res: any) => {
+  router.get("/profile", (req: any, res: any) => {
     res.json({
       message: "Bienvenue sur votre profil",
-      user: { ...req.user, exp: new Date(1741532005 * 1000).toISOString() },
+      user: req.user,
     });
   });
 
-  router.get("/users",  async (_req, res) => {
+  router.get("/users", async (_req, res) => {
+   
     try {
       const users: UserRow[] = await userService.getAllUsers();
       res.json(users);
@@ -116,11 +112,11 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
-  router.get("/usersById", async (req, res) => {
+  router.get("/usersById", authMiddleware([]), async (req, res) => {
     res.json(await userService.getUserById(req.query.userId as string));
   });
 
-  router.delete("/users", async (req, res) => {
+  router.delete("/users", authMiddleware([]), async (req, res) => {
     try {
       await userService.deleteUser(req.query.userId as string);
       res.status(204).send({ message: "User delete successfully" });

@@ -39,3 +39,19 @@ export function formatDate(nwdate: Date) {
   const day = String(date.getDate()).padStart(2, '0');
   return `${day}-${month}-${year}`;
 }
+
+
+export interface IUserData {
+  exp: any;
+  email: string;
+  role: string;
+  password: string;
+}
+
+export interface IRequestUser extends Request {
+  user: IUserData;
+}
+
+export type IAuthRequest = IRequestUser & {
+  headers: { authorization: string };
+};

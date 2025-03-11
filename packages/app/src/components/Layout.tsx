@@ -6,6 +6,8 @@ import { styled } from '@mui/material/styles';
 import AdminPage from '../pages/AdminPage';
 import RegisterUser from '../pages/RegisterUser';
 import HomePage from '../pages/HomePage';
+import AuthRouter from '../pages/Auth/AuthRouter';
+import AuthGuard from '../helper/AuthGuard';
 
 
 const drawerWidth = 240;
@@ -93,7 +95,12 @@ export default function Layout() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/registration" element={<RegisterUser />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin" element={
+            <AuthGuard>
+              <AdminPage />
+            </AuthGuard>
+          } />
+          <Route path="/auth/*" element={<AuthRouter />} />
         </Routes>
       </Main>
     </Box>

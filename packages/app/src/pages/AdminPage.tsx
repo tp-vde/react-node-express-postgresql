@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { VdeApiClient } from '../api';
 import dayjs from 'dayjs';
+import { ApiClient } from '../api/ApiClient';
+
 
 interface Student {
   code: string;
@@ -17,7 +18,7 @@ interface Student {
 };
 
 
-const apiService = new VdeApiClient("http://localhost:7007");
+const apiService = new ApiClient("http://localhost:7007");
 
 export default function AdminPage() {
   const [students, setStudents] = useState<Student[]>([]);

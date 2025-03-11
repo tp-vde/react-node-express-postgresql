@@ -1,7 +1,4 @@
 import React from 'react';
-// import './App.css';
-// import Grid from '@mui/material/Grid2'
-// import RegisterUser from './components/RegisterUser';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -22,13 +19,5 @@ function App() {
   );
 }
 
-
-// function App() {
-//   return (
-//     <Grid container spacing={5}>
-//       <RegisterUser/>
-//     </Grid>
-//   );
-// }
 
 export default App;
