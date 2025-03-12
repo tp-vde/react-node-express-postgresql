@@ -12,7 +12,7 @@ export class ApiClient {
   }
 
   async getUserData(): Promise<UserRow[]> {
-    const token = await getAccessToken({email: "user2@example.com", password: "password123"});
+    const token = await getAccessToken({email: "user2@example.com", password: "password2"});
     const response = await fetch(`${this.backendUrl}/api/users`, {
       method: "GET",
       headers: {
@@ -29,7 +29,7 @@ export class ApiClient {
 
   async getUserById(userId: string): Promise<UserRow[]> {
     const queryString = new URLSearchParams({userId});
-    const token = await getAccessToken({email: "user2@example.com", password: "password123"});
+    const token = await getAccessToken({email: "user2@example.com", password: "password2"});
     const fetchUrl = `${this.backendUrl}/api/users?${queryString}`;
     const response = await fetch(fetchUrl, {
       method: "GET",

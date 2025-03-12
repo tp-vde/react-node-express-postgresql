@@ -1,30 +1,50 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
-import { Home, Person, AdminPanelSettings, Menu as MenuIcon } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
-import AdminPage from '../pages/AdminPage';
-import RegisterUser from '../pages/RegisterUser';
-import HomePage from '../pages/HomePage';
-import AuthRouter from '../pages/Auth/AuthRouter';
-import AuthGuard from '../helper/AuthGuard';
-
+import React from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import {
+  Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Button,
+  colors,
+} from "@mui/material";
+import {
+  Home,
+  Person,
+  AdminPanelSettings,
+  Menu as MenuIcon,
+} from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
+import AdminPage from "../pages/AdminPage";
+import RegisterUser from "../pages/RegisterUser";
+import HomePage from "../pages/HomePage";
+import AuthRouter from "../pages/Auth/AuthRouter";
+import AuthProvider from "../helper/AuthProvider";
+import LogoutIcon from "@mui/icons-material/Logout";
+import LoginIcon from "@mui/icons-material/Login";
+import { accountSrevice } from "../helper/accountSrevice";
 
 const drawerWidth = 240;
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
   marginLeft: `-${drawerWidth}px`,
-  transition: theme.transitions.create('margin', {
+  transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     marginLeft: 0,
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -38,9 +58,19 @@ export default function Layout() {
     setOpen(!open);
   };
 
+  const navigate = useNavigate();
+
+  const logout = () => {
+    accountSrevice.logout();
+    navigate("/");
+  };
+
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <Box sx={{ display: "flex" }}>
+      <AppBar
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -53,6 +83,17 @@ export default function Layout() {
           <Typography variant="h6" noWrap component="div">
             Student Management System
           </Typography>
+          <Button color="info" onClick={logout}>
+            Logout
+          </Button>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={logout}
+            edge="start"
+          >
+            <LogoutIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -62,9 +103,9 @@ export default function Layout() {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          '& .MuiDrawer-paper': {
+          "& .MuiDrawer-paper": {
             width: drawerWidth,
-            boxSizing: 'border-box',
+            boxSizing: "border-box",
           },
         }}
       >
@@ -93,19 +134,30 @@ export default function Layout() {
       <Main open={open}>
         <Toolbar />
         <Routes>
+          {/* <Route path="/login" element={<LoginPage />} /> */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/registration" element={<RegisterUser />} />
-          <Route path="/admin" element={
-            <AuthGuard>
-              <AdminPage />
-            </AuthGuard>
-          } />
+          <Route
+            path="/registration"
+            element={
+              <AuthProvider>
+                <AdminPage />
+              </AuthProvider>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AuthProvider>
+                <AdminPage />
+              </AuthProvider>
+            }
+          />
           <Route path="/auth/*" element={<AuthRouter />} />
         </Routes>
       </Main>
     </Box>
   );
-};
+}
 
 // function App() {
 //   const [token, setToken] = useState('');

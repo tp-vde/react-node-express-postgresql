@@ -66,6 +66,7 @@ export function createRouter(options: RouterOptions): express.Router {
     }
 
     const token = await generateToken(user);
+        console.log('user::', token)
     res.json({ message: "Connexion réussie", token });
   });
 
@@ -112,11 +113,11 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
-  router.get("/usersById", authMiddleware([]), async (req, res) => {
+  router.get("/usersById", async (req, res) => {
     res.json(await userService.getUserById(req.query.userId as string));
   });
 
-  router.delete("/users", authMiddleware([]), async (req, res) => {
+  router.delete("/users", async (req, res) => {
     try {
       await userService.deleteUser(req.query.userId as string);
       res.status(204).send({ message: "User delete successfully" });

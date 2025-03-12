@@ -11,4 +11,7 @@
     created_at?: string;
   };
   
-
+export type IFormInput = {
+  email: string;
+  password: string;
+};

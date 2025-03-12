@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm, SubmitHandler, Controller } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
@@ -9,10 +9,11 @@ import {
   Typography,
   Container,
   Paper,
-  Alert,
 } from '@mui/material';
-import { getAccessToken } from '../api/CredentialsProvider';
+import { getAccessToken } from '../../api/CredentialsProvider';
 import { useNavigate } from 'react-router-dom';
+import { accountSrevice } from '../../helper/accountSrevice';
+import { IFormInput } from '../../api/types';
 
 
 // Définir le schéma de validation avec Yup
@@ -21,58 +22,43 @@ const schema = yup.object({
   password: yup.string().required('Mot de passe requis'),
 });
 
-// Définir le type des données du formulaire
-export type IFormInput = {
-  email: string;
-  password: string;
-};
 
 const initialCredentials: IFormInput = {
   email: "",
   password: "",
 };
-const LoginForm: React.FC = () => {
+
+const LoginPage: React.FC = () => {
+
   const {
     control,
-    // handleSubmit, 
     formState: { errors },
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
   });
 
-  const [token, setToken] = useState('');
   const [credentials, setCredentials] = useState<IFormInput>(initialCredentials);
 
-  let navigate = useNavigate()
-  
-  const handleLogin = async () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     try {
-      const token = await getAccessToken({email: "user2@example.com", password: "password123"});
-      // setToken(token);
+      const token = await getAccessToken(credentials);
+      accountSrevice.saveToken(token);
       if (token) {
-        navigate('/admin', {replace: true})
+        navigate('/admin');
       }
-      console.log('response::', token)
     } catch (error) {
-      console.error("Error fetching registrations:", error);
+      console.error("Error saving registration:", error);
     }
   };
-
-  // const onSubmit = async (e) => {
-  //   e.preventDefault()
-  //   await getAccessToken({email: "user2@example.com", password: "password123"})
-  //       .then(res => {
-  //           // Sauvegarde du token et envoi vers admin
-  //           localStorage.setItem('token', token)
-  //           navigate('/admin', {replace: true})
-  //       })
-  //       .catch(error => console.log(error))
-  // }
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCredentials((prevState) => ({
-      ...prevState,
+    setCredentials(({
+      ...credentials, 
       [name]: value,
     }));
   };
@@ -83,8 +69,7 @@ const LoginForm: React.FC = () => {
         <Typography variant="h4" component="h1" align="center" gutterBottom>
           Connexion
         </Typography>
-        {/* {error && <Alert severity="error">{error}</Alert>} */}
-        <Box component="form" onSubmit={handleLogin}>
+      <Box component="form" onSubmit={handleSubmit} noValidate>
         <Controller
             name="email"
             control={control}
@@ -128,13 +113,10 @@ const LoginForm: React.FC = () => {
           >
             Se connecter
           </Button>
-          {/* {errors.root && (
-            <Alert severity="error">{errors.root.message}</Alert>
-          )} */}
         </Box>
       </Paper>
     </Container>
   );
 };
 
-export default LoginForm;
+export default LoginPage;

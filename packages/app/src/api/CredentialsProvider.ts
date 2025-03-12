@@ -1,4 +1,4 @@
-import { IFormInput } from "../pages/LoginForm";
+import { IFormInput } from "./types";
 
 
 const backendUrl = 'http://localhost:7007';
