@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles';
+import { palettes } from './palettes';
 
 export const theme = createTheme({
   palette: {
@@ -9,4 +10,12 @@ export const theme = createTheme({
       main: '#dc004e',
     },
   },
+});
+
+export const lightTheme = createTheme({
+  palette: palettes.light,
+});
+
+export const darkTheme = createTheme({
+  palette: palettes.dark,
 });

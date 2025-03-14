@@ -1,5 +1,5 @@
 
-  export interface UserRow {
+  export interface StudentRow {
     code: string;
     name: string;
     first_name: string;

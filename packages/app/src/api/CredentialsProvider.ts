@@ -4,7 +4,7 @@ import { IFormInput } from "./types";
 const backendUrl = 'http://localhost:7007';
 
 export const getAccessToken = async (credential: IFormInput): Promise<string> =>{ 
-    const fetchUrl = `${backendUrl}/api/login?${credential}`;
+    const fetchUrl = `${backendUrl}/api/login`;
     const response = await fetch(fetchUrl, {
         method: 'POST',
         headers: {
@@ -16,10 +16,9 @@ export const getAccessToken = async (credential: IFormInput): Promise<string> =>
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
-    const tokenKey = await response.json();
-    return tokenKey.token;
+    const key = await response.json();
+    return key.token;
   };
-  
   
   
   export const getCredentials = async (): Promise<IFormInput> => {

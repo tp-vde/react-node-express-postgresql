@@ -1,4 +1,4 @@
-import { MigrationManager } from './utils/MigrationManager';
+import MigrationManager from './utils/MigrationManager';
 import express from 'express';
 import { createRouter } from './routes/router';
 import { ConfigReader } from "./config/ConfigReader";

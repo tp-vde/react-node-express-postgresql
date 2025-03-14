@@ -1,17 +1,22 @@
 
-let saveToken = (token: string) => {
+const saveToken = (token: string) => {
     localStorage.setItem('token', token)
 }
 
-let logout = () => {
+const logout = () => {
     localStorage.removeItem('token');
 }
 
-let isLogged = () => {
+const isLogged = () => {
+    let token = localStorage.getItem('token');
+    return !!token;
+}
+
+const getToken = () => {
     let token = localStorage.getItem('token');
     return !!token;
 }
 
 export const accountSrevice = {
-    saveToken, logout, isLogged
+    saveToken, logout, isLogged, getToken
 }
