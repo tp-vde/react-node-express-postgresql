@@ -1,6 +1,7 @@
 import fetch from 'cross-fetch';
-import { UserRow } from './types';
+import { StudentRow } from './types';
 import { getAccessToken } from './CredentialsProvider';
+import { accountSrevice } from '../helper/accountSrevice';
 
 
 
@@ -11,8 +12,25 @@ export class ApiClient {
     this.backendUrl = backendUrl;
   }
 
-  async getUserData(): Promise<UserRow[]> {
-    const token = await getAccessToken({email: "user2@example.com", password: "password2"});
+  async getStudentData(): Promise<StudentRow[]> {
+    const token = accountSrevice.getToken();
+    const response = await fetch(`${this.backendUrl}/api/students`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+    });
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+    const data: StudentRow[] = await response.json();
+    return data;
+  };
+
+
+  async getUserData(): Promise<StudentRow[]> {
+    const token = accountSrevice.getToken();
     const response = await fetch(`${this.backendUrl}/api/users`, {
       method: "GET",
       headers: {
@@ -23,14 +41,14 @@ export class ApiClient {
     if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-    const data: UserRow[] = await response.json();
+    const data: StudentRow[] = await response.json();
     return data;
   };
 
-  async getUserById(userId: string): Promise<UserRow[]> {
+  async getUserById(userId: string): Promise<StudentRow[]> {
     const queryString = new URLSearchParams({userId});
-    const token = await getAccessToken({email: "user2@example.com", password: "password2"});
-    const fetchUrl = `${this.backendUrl}/api/users?${queryString}`;
+    const token = accountSrevice.getToken();
+    const fetchUrl = `${this.backendUrl}/api/student?${queryString}`;
     const response = await fetch(fetchUrl, {
       method: "GET",
       headers: {
@@ -41,17 +59,19 @@ export class ApiClient {
     if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-    const data: UserRow[] = await response.json();
+    const data: StudentRow[] = await response.json();
     return data;
   };
 
 
-  async pushUser(user: UserRow): Promise<boolean> {
-    const fetchUrl = `${this.backendUrl}/api/users`;
+  async pushUser(user: StudentRow): Promise<boolean> {
+    const token = accountSrevice.getToken();
+    const fetchUrl = `${this.backendUrl}/api/student`;
     const response = await fetch(fetchUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(user),
     });
@@ -63,8 +83,8 @@ export class ApiClient {
 
   async deleteUser(userId: string): Promise<boolean> {
     const queryString = new URLSearchParams(userId.toString());
-    const token = await getAccessToken({email: "user2@example.com", password: "password123"});
-    const fetchUrl = `${this.backendUrl}/api/users?${queryString}`;
+    const token = accountSrevice.getToken();
+    const fetchUrl = `${this.backendUrl}/api/student?${queryString}`;
     const response = await fetch(fetchUrl, {
         method: 'DELETE',
         headers: {

@@ -3,12 +3,12 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { theme } from './theme';
 import Layout from './components/Layout';
+import { lightTheme, theme } from './theme';
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={lightTheme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline />
         <Router>

@@ -2,7 +2,7 @@ import knex, { Knex } from 'knex';
 import config from "./knexConnect";
 
 
-export class MigrationManager {
+export default class MigrationManager {
   private readonly dbName: string;
   private readonly knexInstance: Knex;
 

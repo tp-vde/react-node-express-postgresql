@@ -4,14 +4,8 @@
  */
 
 exports.up = async function up(knex) {
-    return knex.schema.createTable('vde_students' , table => {
+    return knex.schema.createTable('students' , table => {
       table.comment('Table des etudiants');
-    //   table
-    //        .uuid('id')
-    //        .primary()
-    //        .notNullable()
-    //        .defaultTo(db.raw('gen_random_uuid()'))
-    //        .comment('Identifiant unique');
       table
           .string('code')
           .primary()
@@ -20,11 +14,11 @@ exports.up = async function up(knex) {
       table
           .string('name')
           .notNullable()
-          .comment('Nom de l\étudiant');
+          .comment('Nom de l\'étudiant');
       table
           .string('first_name')
           .notNullable()
-          .comment('Prénom de l\étudiant');
+          .comment('Prénom de l\'étudiant');
       table
           .string('email')
           .unique()
@@ -51,10 +45,9 @@ exports.up = async function up(knex) {
           .notNullable()
           .defaultTo(knex.fn.now())
           .comment('Date récente à laquelle les données de l\'étudiant ont été actualisées');
-      table.string('role').notNullable().defaultTo('USER');
-      table.index(['code'], 'vde_students_code_idx');
+      table.index(['code'], 'students_code_idx');
       table.unique(['code', 'email'], {
-          indexName: 'vde_students_unique_idx',
+          indexName: 'students_unique_idx',
         });
     })
   };
@@ -65,7 +58,7 @@ exports.up = async function up(knex) {
    */
   exports.down = async function down(knex) {
     return knex.schema
-    .dropTable('vde_students')
+    .dropTable('students')
   };
   
 

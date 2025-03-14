@@ -1,6 +1,27 @@
 import winston from "winston";
 
 export interface UserRow {
+  id:string;
+  last_name: string;
+  first_name: string;
+  email: string;
+  phone: string;
+  created_at: Date | string;
+};
+
+// export interface RoleRow {
+//   id: number;
+//   name: string;
+//   created_at?: Date | string;
+// };
+
+export interface UserRoleRow {
+  email: string;
+  role: string;
+  password: string;
+};
+
+export interface StudentRow {
   code: string;
   name: string;
   first_name: string;
@@ -55,3 +76,4 @@ export interface IRequestUser extends Request {
 export type IAuthRequest = IRequestUser & {
   headers: { authorization: string };
 };
+

@@ -46,12 +46,12 @@ const LoginPage: React.FC = () => {
 
     try {
       const token = await getAccessToken(credentials);
-      accountSrevice.saveToken(token);
       if (token) {
-        navigate('/admin');
+        accountSrevice.saveToken(token);
+        navigate('/student');
       }
     } catch (error) {
-      console.error("Error saving registration:", error);
+      console.error("Error connect to students:", error);
     }
   };
   

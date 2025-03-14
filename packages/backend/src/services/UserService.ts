@@ -1,8 +1,12 @@
-import { formatDate, UserRow } from '../types/types';
+import { formatDate, UserRoleRow, UserRow } from '../types/types';
 import knex from 'knex';
 import config from '../utils/knexConnect';
+import { v4 as uuid } from 'uuid';
 
-const TABLE = 'vde_students';
+var generator = require('generate-password');
+
+const USER = 'users';
+const USER_ROLE = 'user_roles';
 const dbClient = knex({
   ...config.development,
   client: 'pg',
@@ -14,39 +18,52 @@ const dbClient = knex({
 });
 
 export class UserService {
-  async createUser(user: UserRow): Promise<void> {
-    await dbClient(TABLE).insert({
-      code: user.code,
-      name: user.name,
-      first_name: user.first_name,
-      email: user.email,
-      phone: user.phone,
-      speciality: user.speciality,
-      entry_at: user.entry_at,
-      first_departure_mission_at: user.first_departure_mission_at
-    }).onConflict(['code', 'email']).merge();
+  async createUser(user: UserRow & {role: string;}): Promise<void> {
+    await dbClient<UserRow>(USER)
+      .insert({
+        id: uuid(),
+        last_name: user.last_name,
+        first_name: user.first_name,
+        email: user.email,
+        phone: user.phone,
+        created_at: dbClient.fn.now(),
+      })
+      .onConflict(["email", 'phone'])
+      .merge();
+
+    await dbClient(USER_ROLE)
+      .insert({
+        email: user.email,
+        role: user.role,
+        password:  generator.generate({ length: 10, numbers: true }),
+      })
+      .onConflict(["email"])
+      .merge(['role']);
+      return await dbClient(USER_ROLE).where({ email: user.email}).select("password").first(); 
   }
 
   async getAllUsers(): Promise<UserRow[]> {
-    const users: UserRow[] = await dbClient<UserRow>(TABLE).select("*");
-    return users.map((row) => ({
-      code: row.code,
-      name: row.name,
-      first_name: row.first_name,
-      email: row.email,
-      phone: row.phone,
-      speciality: row.speciality,
-      entry_at: formatDate(new Date(row.entry_at)),
-      first_departure_mission_at: row.first_departure_mission_at ? formatDate(new Date(row.first_departure_mission_at)): undefined,
+    const users: UserRow[] = await dbClient<UserRow>(USER).select("*");
+    return users.map((user) => ({
+      id: user.id,
+      last_name: user.last_name,
+      first_name: user.first_name,
+      email: user.email,
+      phone: user.phone,
+      created_at: formatDate(new Date(user.created_at)),
     }));
   };
 
   async deleteUser(userId?: string ) {
-    return await dbClient(TABLE).where({ code: userId }).delete();
+    return await dbClient(USER).where({ id: userId }).delete();
   };
 
   async getUserById(userId: string): Promise<UserRow> {
-    return await dbClient(TABLE).where({ code: userId }).first();
+    return await dbClient(USER).where({ code: userId }).first();
+  };
+
+  async getUserRoleById(userEmail: string, userPassword: string): Promise<UserRoleRow> {
+    return await dbClient(USER_ROLE).where({ email: userEmail , password: userPassword }).first();
   };
 
 }

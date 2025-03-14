@@ -12,7 +12,6 @@ import {
   Typography,
   IconButton,
   Button,
-  colors,
 } from "@mui/material";
 import {
   Home,
@@ -21,16 +20,15 @@ import {
   Menu as MenuIcon,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import StudentPage from "../pages/StudentPage";
 import AdminPage from "../pages/AdminPage";
-import RegisterUser from "../pages/RegisterUser";
 import HomePage from "../pages/HomePage";
 import AuthRouter from "../pages/Auth/AuthRouter";
 import AuthProvider from "../helper/AuthProvider";
 import LogoutIcon from "@mui/icons-material/Logout";
-import LoginIcon from "@mui/icons-material/Login";
 import { accountSrevice } from "../helper/accountSrevice";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
@@ -117,11 +115,11 @@ export default function Layout() {
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem component="a" href="/registration">
+          <ListItem component="a" href="/student">
             <ListItemIcon>
               <Person />
             </ListItemIcon>
-            <ListItemText primary="Registration" />
+            <ListItemText primary="Students" />
           </ListItem>
           <ListItem component="a" href="/admin">
             <ListItemIcon>
@@ -137,10 +135,10 @@ export default function Layout() {
           {/* <Route path="/login" element={<LoginPage />} /> */}
           <Route path="/" element={<HomePage />} />
           <Route
-            path="/registration"
+            path="/student"
             element={
               <AuthProvider>
-                <AdminPage />
+                <StudentPage />
               </AuthProvider>
             }
           />
@@ -157,35 +155,4 @@ export default function Layout() {
       </Main>
     </Box>
   );
-}
-
-// function App() {
-//   const [token, setToken] = useState('');
-//   const [message, setMessage] = useState('');
-
-//   const handleLogin = async () => {
-//     const response = await fetch('http://localhost:5000/login', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ username: 'admin', password: 'password' }),
-//     });
-//     const data = await response.json();
-//     setToken(data.token);
-//   };
-
-//   const fetchProtectedData = async () => {
-//     const response = await fetch('http://localhost:5000/protected', {
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     const data = await response.json();
-//     setMessage(data.message);
-//   };
-
-//   return (
-//     <div>
-//       <button onClick={handleLogin}>Se connecter</button>
-//       <button onClick={fetchProtectedData}>Accéder à la route protégée</button>
-//       <p>{message}</p>
-//     </div>
-//   );
-// }
+};
