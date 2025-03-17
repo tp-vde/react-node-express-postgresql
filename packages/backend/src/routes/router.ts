@@ -7,7 +7,7 @@ import * as winston from "winston";
 import bodyParser from "body-parser";
 import { authMiddleware, generateToken } from "../ahuth/authMiddleware";
 import { StudentService } from "../services/StudentService";
-import { sendMail } from "../notifications/sendmail";
+import { mailOptions, sendMail } from "../notifications/sendmail";
 
 export type RouterOptions = {
   logger: winston.Logger;
@@ -54,11 +54,12 @@ export function createRouter(options: RouterOptions): express.Router {
   router.post("/user", async (req: Request, res: Response): Promise<any>  => {
     try {
       const password = await userService.createUser(req.body);
-      console.log('password::', password)
-      await sendMail();
+      const options = { ...mailOptions,  to: req.body.email, html: `<p>Veuillez trouver votre mot de passe ci-après : ${password}</p>` };
+      await sendMail(options);
+      console.log("Option::", password)
       res.status(201).json({ message: "Utilisateur créé avec succès" });
       logger.info(
-        `Utilisateur créé avec succès :: ${req.query.first_name} ${req.query.name}`
+        `Utilisateur créé avec succès :: ${req.body.first_name} ${req.body.last_name}`
       );
     } catch (err: any) {
       res.status(500).json({ message: err.message });

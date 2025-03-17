@@ -4,7 +4,7 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Layout from './components/Layout';
-import { lightTheme, theme } from './theme';
+import { lightTheme } from './theme';
 
 function App() {
   return (

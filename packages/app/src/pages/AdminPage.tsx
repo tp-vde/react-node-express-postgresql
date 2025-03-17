@@ -56,7 +56,7 @@ function AdminPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await apiService.getUserData();
+      const response = await apiService.getStudentData();
       setRows(response);
     } catch (error) {
       console.error("Error fetching registrations:", error);
@@ -88,7 +88,7 @@ function AdminPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await apiService.pushUser(formData);
+      await apiService.pushStudent(formData);
       fetchUsers();
       setFormData(initialFormData);
       setEditMode(false);
@@ -114,7 +114,7 @@ function AdminPage() {
   const confirmDelete = async () => {
     if (selectedId) {
       try {
-        await apiService.deleteUser(selectedId);
+        await apiService.deleteStudent(selectedId);
         fetchUsers();
         setOpenDialog(false);
         setSelectedId(null);

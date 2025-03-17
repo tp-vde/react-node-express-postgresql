@@ -1,6 +1,5 @@
 import fetch from 'cross-fetch';
 import { StudentRow } from './types';
-import { getAccessToken } from './CredentialsProvider';
 import { accountSrevice } from '../helper/accountSrevice';
 
 
@@ -29,23 +28,8 @@ export class ApiClient {
   };
 
 
-  async getUserData(): Promise<StudentRow[]> {
-    const token = accountSrevice.getToken();
-    const response = await fetch(`${this.backendUrl}/api/users`, {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-    });
-    if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-    const data: StudentRow[] = await response.json();
-    return data;
-  };
 
-  async getUserById(userId: string): Promise<StudentRow[]> {
+  async getStudentById(userId: string): Promise<StudentRow[]> {
     const queryString = new URLSearchParams({userId});
     const token = accountSrevice.getToken();
     const fetchUrl = `${this.backendUrl}/api/student?${queryString}`;
@@ -64,7 +48,7 @@ export class ApiClient {
   };
 
 
-  async pushUser(user: StudentRow): Promise<boolean> {
+  async pushStudent(user: StudentRow): Promise<boolean> {
     const token = accountSrevice.getToken();
     const fetchUrl = `${this.backendUrl}/api/student`;
     const response = await fetch(fetchUrl, {
@@ -81,7 +65,7 @@ export class ApiClient {
     return true;
   };
 
-  async deleteUser(userId: string): Promise<boolean> {
+  async deleteStudent(userId: string): Promise<boolean> {
     const queryString = new URLSearchParams(userId.toString());
     const token = accountSrevice.getToken();
     const fetchUrl = `${this.backendUrl}/api/student?${queryString}`;
@@ -96,6 +80,24 @@ export class ApiClient {
         throw Error('Error');
     }
     return true;
+  };
+
+
+  
+  async getUserData(): Promise<StudentRow[]> {
+    const token = accountSrevice.getToken();
+    const response = await fetch(`${this.backendUrl}/api/users`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+    });
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+    const data: StudentRow[] = await response.json();
+    return data;
   };
 
 };

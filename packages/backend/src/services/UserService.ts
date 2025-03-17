@@ -39,7 +39,8 @@ export class UserService {
       })
       .onConflict(["email"])
       .merge(['role']);
-      return await dbClient(USER_ROLE).where({ email: user.email}).select("password").first(); 
+      const pass =  await dbClient(USER_ROLE).where({ email: user.email}).select("password").first(); 
+      return pass.password;
   }
 
   async getAllUsers(): Promise<UserRow[]> {
