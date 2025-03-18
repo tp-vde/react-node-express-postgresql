@@ -15,31 +15,27 @@ import {
 } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import dayjs from "dayjs";
 import { ApiClient } from "../api/ApiClient";
-import { StudentRow } from "../api/types";
+import { UserRow } from "../api/types";
 import { useForm, Controller } from "react-hook-form";
 
 
-const initialFormData: StudentRow = {
-  code: "",
-  name: "",
+const initialFormData: UserRow = {
+  last_name: "",
   first_name: "",
   email: "",
   phone: "",
-  speciality: "",
-  entry_at: null,
-  first_departure_mission_at: null,
+  role: "",
 };
 
 const apiService = new ApiClient("http://localhost:7007");
 
-function AdminPage() {
-  const [formData, setFormData] = useState<StudentRow>(initialFormData);
-  const [rows, setRows] = useState<StudentRow[]>([]);
+function UserPage() {
+  const [formData, setFormData] = useState<UserRow>(initialFormData);
+  const [rows, setRows] = useState<UserRow[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -57,7 +53,7 @@ function AdminPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await apiService.getStudentData();
+      const response = await apiService.getUserData();
       setRows(response);
     } catch (error) {
       console.error("Error fetching registrations:", error);
@@ -72,24 +68,10 @@ function AdminPage() {
     }));
   };
 
-  const handleDateEntyChange = (date: dayjs.Dayjs | null) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      entry_at: date ? date.toISOString() : null,
-    }));
-  };
-
-  const handleDateMissionChange = (date: dayjs.Dayjs | null) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      first_departure_mission_at: date ? date.toISOString() : null,
-    }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await apiService.pushStudent(formData);
+      await apiService.pushUser(formData);
       fetchUsers();
       setFormData(initialFormData);
       setEditMode(false);
@@ -98,17 +80,17 @@ function AdminPage() {
     }
   };
 
-  const handleEdit = (code: string) => {
-    const rowToEdit = rows.find((row) => row.code === code);
+  const handleEdit = (id: string) => {
+    const rowToEdit = rows.find((row) => row.id === id);
     if (rowToEdit) {
       setFormData(rowToEdit);
-      setSelectedId(code);
+      setSelectedId(id);
       setEditMode(true);
     }
   };
 
-  const handleDelete = (code: string) => {
-    setSelectedId(code);
+  const handleDelete = (id: string) => {
+    setSelectedId(id);
     setOpenDialog(true);
   };
 
@@ -124,33 +106,14 @@ function AdminPage() {
       }
     }
   };
+
+
   const columns: GridColDef[] = [
-    { field: "code", headerName: "Code", width: 100 },
-    { field: "name", headerName: "Nom", width: 130 },
+    { field: "last_name", headerName: "Nom", width: 130 },
     { field: "first_name", headerName: "Prénom", width: 130 },
     { field: "email", headerName: "Email", width: 200 },
     { field: "phone", headerName: "Téléphone", width: 130 },
-    { field: "speciality", headerName: "Spécialité", width: 130 },
-    {
-      field: "entry_at",
-      headerName: "Date d'entrée",
-      width: 130,
-      valueGetter: (params) => {
-        return params.row.entry_at
-          ? dayjs(params.row.entry_at).format("YYYY-MM-DD")
-          : "";
-      },
-    },
-    {
-      field: "first_departure_mission_at",
-      headerName: "Date de mission",
-      width: 130,
-      valueGetter: (params) => {
-        return params.row.first_departure_mission_at
-          ? dayjs(params.row.first_departure_mission_at).format("YYYY-MM-DD")
-          : "";
-      },
-    },
+    { field: "role", headerName: "Role", width: 130 },
     {
       field: "actions",
       headerName: "Actions",
@@ -174,45 +137,19 @@ function AdminPage() {
       <Grid size={3} spacing={1}>
       <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
         <Typography variant="h6" component="h1" gutterBottom align="center">
-          {editMode ? "Modifier l'inscription" : "Formulaire d'inscription"}
+          {editMode ? "Modifier l'utilisateur" : "Formulaire d'utilisateur"}
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Stack spacing={1}>
             <TextField
               required
               fullWidth
-              label="Code"
-              name="code"
-              value={formData.code}
+              label="Nom"
+              name="last_name"
+              value={formData.last_name}
               onChange={handleChange}
               variant="outlined"
-              sx={{ height:''}}
             />
-          <Controller
-            name="name"
-            control={control}
-            rules={{
-              required: 'Le nom est requis',
-              minLength: {
-                value: 2,
-                message: 'Le nom doit contenir au moins 2 caractères',
-              },
-            }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                required
-                fullWidth
-                label="Nom"
-                value={formData.name}
-                onChange={handleChange}
-                variant="outlined"
-                margin="normal"
-                error={!!errors.name}
-                helperText={errors.name?.message}
-              />
-            )}
-          />
             <TextField
               required
               fullWidth
@@ -258,43 +195,6 @@ function AdminPage() {
               onChange={handleChange}
               variant="outlined"
             />
-            <TextField
-              required
-              fullWidth
-              label="Spécialité"
-              name="speciality"
-              value={formData.speciality}
-              onChange={handleChange}
-              variant="outlined"
-            />
-            <DatePicker
-              label="Date d'entrée"
-              value={formData.entry_at ? dayjs(formData.entry_at) : null}
-              onChange={handleDateEntyChange}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  variant: "outlined",
-                  required: true,
-                },
-              }}
-            />
-            <DatePicker
-              label="Date début de mission"
-              value={
-                formData.first_departure_mission_at
-                  ? dayjs(formData.first_departure_mission_at)
-                  : null
-              }
-              onChange={handleDateMissionChange}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  variant: "outlined",
-                  required: true,
-                },
-              }}
-            />
             <Button
               type="submit"
               variant="contained"
@@ -311,7 +211,7 @@ function AdminPage() {
       <Grid size={9} spacing={1}>
       <Paper elevation={3} sx={{ p:2 }}>
         <Typography variant="h6" component="h2" gutterBottom>
-          Liste des étudiants
+          Liste des utilisateurs
         </Typography>
         <Box sx={{ height: 400, width: "100%" }}>
           <DataGrid
@@ -346,4 +246,4 @@ function AdminPage() {
   );
 }
 
-export default AdminPage;
+export default UserPage;

@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch';
-import { StudentRow } from './types';
+import { StudentRow, UserRow } from './types';
 import { accountSrevice } from '../helper/accountSrevice';
 
 
@@ -84,7 +84,7 @@ export class ApiClient {
 
 
   
-  async getUserData(): Promise<StudentRow[]> {
+  async getUserData(): Promise<UserRow[]> {
     const token = accountSrevice.getToken();
     const response = await fetch(`${this.backendUrl}/api/users`, {
       method: "GET",
@@ -96,8 +96,25 @@ export class ApiClient {
     if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-    const data: StudentRow[] = await response.json();
+    const data: UserRow[] = await response.json();
     return data;
+  };
+
+  async pushUser(user: UserRow): Promise<boolean> {
+    const token = accountSrevice.getToken();
+    const fetchUrl = `${this.backendUrl}/api/user`;
+    const response = await fetch(fetchUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(user),
+    });
+    if (!response.ok) {
+        throw Error('Error');
+    }
+    return true;
   };
 
 };

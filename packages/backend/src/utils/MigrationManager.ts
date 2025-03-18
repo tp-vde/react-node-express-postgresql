@@ -51,5 +51,5 @@ export default class MigrationManager {
     console.log('Migrations rolled back.');
   }
 
-}
+};
 

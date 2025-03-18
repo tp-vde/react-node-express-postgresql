@@ -3,7 +3,8 @@ import { Container, Paper, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
 import { ApiClient } from '../api/ApiClient';
-
+import { extendTheme, styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid2';
 
 interface Student {
   code: string;
@@ -58,8 +59,31 @@ export default function StudentPage() {
   ];
 
   return (
-    <Container maxWidth="lg">
-      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+    <Container maxWidth="lg" sx={{ bgcolor: 'green'}}>
+    <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+    <Typography variant="h4" component="h1" gutterBottom>
+          Liste des étudiants de VDE
+        </Typography>
+            <Grid container spacing={1}>
+      
+              <Grid size={12} sx={{ }}>
+      
+          <DataGrid
+            rows={students}
+            columns={columns}
+            pageSizeOptions={[5, 10, 25]}
+            getRowId={(students) => students.code}
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: 5 }
+              }
+            }}
+          />
+     
+              </Grid>
+            </Grid>
+            </Paper> 
+      {/* <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Liste des étudiants de VDE
         </Typography>
@@ -76,7 +100,7 @@ export default function StudentPage() {
             }}
           />
         </div>
-      </Paper>
+      </Paper> */}
     </Container>
   );
 }

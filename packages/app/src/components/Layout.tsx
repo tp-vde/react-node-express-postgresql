@@ -27,6 +27,7 @@ import AuthRouter from "../pages/Auth/AuthRouter";
 import AuthProvider from "../helper/AuthProvider";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { accountSrevice } from "../helper/accountSrevice";
+import LoginPage from "../pages/Auth/LoginPage";
 
 const drawerWidth = 200;
 
@@ -132,7 +133,7 @@ export default function Layout() {
       <Main open={open}>
         <Toolbar />
         <Routes>
-          {/* <Route path="/login" element={<LoginPage />} /> */}
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<HomePage />} />
           <Route
             path="/student"
