@@ -15,20 +15,6 @@ export type RouterOptions = {
   // auth?: AuthService;
 };
 
-// 'passport'
-
-// const sendmail = require('sendmail')();
- 
-// sendmail({
-//     from: 'no-reply@yourdomain.com',
-//     to: 'test@qq.com, test@sohu.com, test@163.com ',
-//     subject: 'test sendmail',
-//     html: 'Mail of test sendmail ',
-//   }, function(err, reply) {
-//     console.log(err && err.stack);
-//     console.dir(reply);
-// });
-
 export function createRouter(options: RouterOptions): express.Router {
   const { logger } = options;
   const userService = new UserService();
@@ -51,12 +37,11 @@ export function createRouter(options: RouterOptions): express.Router {
   /**
    * Route d'inscription des utilisateurs en base
    */
-  router.post("/user", async (req: Request, res: Response): Promise<any>  => {
+  router.post("/user", authMiddleware(['admin']), async (req: Request, res: Response): Promise<any>  => {
     try {
       const password = await userService.createUser(req.body);
       const options = { ...mailOptions,  to: req.body.email, html: `<p>Veuillez trouver votre mot de passe ci-après : ${password}</p>` };
       await sendMail(options);
-      console.log("Option::", password)
       res.status(201).json({ message: "Utilisateur créé avec succès" });
       logger.info(
         `Utilisateur créé avec succès :: ${req.body.first_name} ${req.body.last_name}`
@@ -78,11 +63,6 @@ export function createRouter(options: RouterOptions): express.Router {
     res.json({ message: "Connexion réussie", token });
   });
 
-  // Route protégée pour les admins
-  router.get('/admin',  authMiddleware(['admin']), (_req, res) => {
-    res.json({ message: 'Bienvenue, admin !' });
-  });
-
   // Route protégée pour les utilisateurs
   router.get('/users', authMiddleware(['user', 'admin']), async (_req, res) => {
     try {
@@ -96,6 +76,18 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
+  router.delete("/user",  async (req, res) => {
+    try {
+      await userService.deleteUser(req.query.userId as string);
+      res.status(204).send({ message: "Student delete successfully" });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+      logger.info(
+        `Unable to get metadata for '${req.query.userId}' with error ${err.messag}`
+      );
+    }
+  });
+
   // Route protégée : accès seulement si l'utilisateur est authentifié
   router.get("/profile", (req: any, res: any) => {
     res.json({
@@ -104,7 +96,7 @@ export function createRouter(options: RouterOptions): express.Router {
     });
   });
 
-  router.get("/students", async (_req, res) => {
+  router.get("/students", authMiddleware(['user', 'admin']), async (_req, res) => {
     try {
       const students: StudentRow[] = await studentService.getAllStudents();
       res.json(students);
@@ -116,7 +108,7 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
-  router.post("/student", async (req, res) => {
+  router.post("/student", authMiddleware(['user', 'admin']), async (req, res) => {
     try {
       await studentService.createStudent(req.body);
       res.status(201).json({ message: "Student upserted successfully" });
@@ -128,7 +120,7 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
-  router.get("/student", async (req, res) => {
+  router.get("/student", authMiddleware(['user', 'admin']), async (req, res) => {
     res.json(await studentService.getStudentById(req.query.stCode as string));
   });
 

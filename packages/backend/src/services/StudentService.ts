@@ -14,22 +14,22 @@ const dbClient = knex({
 });
 
 export class StudentService {
-  async createStudent(user: StudentRow): Promise<void> {
+  async createStudent(student: StudentRow): Promise<void> {
     await dbClient(TABLE).insert({
-      code: user.code,
-      name: user.name,
-      first_name: user.first_name,
-      email: user.email,
-      phone: user.phone,
-      speciality: user.speciality,
-      entry_at: user.entry_at,
-      first_departure_mission_at: user.first_departure_mission_at
+      code: student.code,
+      name: student.name,
+      first_name: student.first_name,
+      email: student.email,
+      phone: student.phone,
+      speciality: student.speciality,
+      entry_at: student.entry_at,
+      first_departure_mission_at: student.first_departure_mission_at
     }).onConflict(['code', 'email']).merge();
   }
 
   async getAllStudents(): Promise<StudentRow[]> {
-    const users: StudentRow[] = await dbClient<StudentRow>(TABLE).select("*");
-    return users.map((row) => ({
+    const students: StudentRow[] = await dbClient<StudentRow>(TABLE).select("*");
+    return students.map((row) => ({
       code: row.code,
       name: row.name,
       first_name: row.first_name,

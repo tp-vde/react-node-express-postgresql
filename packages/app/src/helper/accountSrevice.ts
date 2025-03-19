@@ -14,7 +14,7 @@ const isLogged = () => {
 
 const getToken = () => {
     let token = localStorage.getItem('token');
-    return !!token;
+    return token;
 }
 
 export const accountSrevice = {

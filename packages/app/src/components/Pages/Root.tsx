@@ -2,8 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './AppProvider';
 import Navigation from './Navigation';
-
-import SettingsPage from './SettingsPage';
 import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import LoginPage from '../../pages/Auth/LoginPage';
 import StudentPage from '../../pages/StudentPage';

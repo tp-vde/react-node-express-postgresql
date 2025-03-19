@@ -12,12 +12,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  SelectChangeEvent,
 } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import dayjs from "dayjs";
 import { ApiClient } from "../api/ApiClient";
 import { UserRow } from "../api/types";
 import { useForm, Controller } from "react-hook-form";
@@ -40,6 +44,13 @@ function UserPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  const handleChangeRole = (event: SelectChangeEvent) => {
+
+    setFormData(() => ({
+        ...formData,
+        role: event.target.value,
+      }));
+  };
   const {
     control,
     formState: { errors },
@@ -97,7 +108,7 @@ function UserPage() {
   const confirmDelete = async () => {
     if (selectedId) {
       try {
-        await apiService.deleteStudent(selectedId);
+        await apiService.deleteUser(selectedId);
         fetchUsers();
         setOpenDialog(false);
         setSelectedId(null);
@@ -120,10 +131,10 @@ function UserPage() {
       width: 130,
       renderCell: (params: GridRenderCellParams) => (
         <Box>
-          <IconButton onClick={() => handleEdit(params.row.code)}>
+          <IconButton onClick={() => handleEdit(params.row.id)}>
             <EditIcon color="primary" />
           </IconButton>
-          <IconButton onClick={() => handleDelete(params.row.code)}>
+          <IconButton onClick={() => handleDelete(params.row.id)}>
             <DeleteIcon color="error" />
           </IconButton>
         </Box>
@@ -195,6 +206,23 @@ function UserPage() {
               onChange={handleChange}
               variant="outlined"
             />
+            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                <InputLabel id="demo-select-small-label">Role</InputLabel>
+                <Select
+                    labelId="demo-select-small-label"
+                    id="demo-select-small"
+                    value={formData.role}
+                    label="Role"
+                    onChange={handleChangeRole}
+                >
+                    <MenuItem value="">
+                    <em>None</em>
+                    </MenuItem>
+                    <MenuItem value='user'>user</MenuItem>
+                    <MenuItem value='moderator' >moderator</MenuItem>
+                    <MenuItem value='admin'>admin</MenuItem>
+                </Select>
+                </FormControl>
             <Button
               type="submit"
               variant="contained"
@@ -217,7 +245,7 @@ function UserPage() {
           <DataGrid
             rows={rows}
             columns={columns}
-            getRowId={(row) => row.code}
+            getRowId={(row) => row.id}
             pageSizeOptions={[5, 10, 25]}
             initialState={{
               pagination: {
