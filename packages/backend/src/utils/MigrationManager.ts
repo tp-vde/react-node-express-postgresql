@@ -1,10 +1,8 @@
 import knex, { Knex } from 'knex';
 import config from "./knexConnect";
-import logger from '../utils/logger';
 
 
-
-export class MigrationManager {
+export default class MigrationManager {
   private readonly dbName: string;
   private readonly knexInstance: Knex;
 
@@ -21,9 +19,9 @@ export class MigrationManager {
 
     if (dbExists.rowCount === 0) {
       await this.knexInstance.raw(`CREATE DATABASE ??`, [this.dbName]);
-      logger.info(`La database '${this.dbName}' a été créée`);
+      console.log(`Database ${this.dbName} created.`);
     } else {
-      logger.info(`Database ${this.dbName} already exists.`);
+      console.log(`Database ${this.dbName} already exists.`);
     }
   }
 
@@ -40,18 +38,17 @@ export class MigrationManager {
 
     await knexCnx.migrate.latest();
     await knexCnx.destroy();
-    logger.info('Migrations run successfully.');
+    console.log('Migrations run successfully.');
   }
 
   async close() {
     await this.knexInstance.destroy();
-    logger.info('Connection closed.');
+    console.log('Connection closed.');
   }
 
   async rollback() {
     await this.knexInstance.migrate.rollback();
-    logger.info('Migrations rolled back.');
+    console.log('Migrations rolled back.');
   }
 
-}
-
+};
