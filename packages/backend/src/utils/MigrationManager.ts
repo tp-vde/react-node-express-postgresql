@@ -4,7 +4,7 @@ import logger from '../utils/logger';
 
 
 
-export default class MigrationManager {
+export class MigrationManager {
   private readonly dbName: string;
   private readonly knexInstance: Knex;
 
@@ -53,5 +53,5 @@ export default class MigrationManager {
     logger.info('Migrations rolled back.');
   }
 
-};
+}
 
