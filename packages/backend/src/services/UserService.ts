@@ -44,13 +44,17 @@ export class UserService {
   }
 
   async getAllUsers(): Promise<UserRow[]> {
-    const users: UserRow[] = await dbClient<UserRow>(USER).select("*");
+    const users = await dbClient<UserRow & { role: string}>('users as a')
+      .select('a.*', 'b.role')
+      .join('user_roles as b', 'a.email', 'b.email')
+      .orderBy('a.last_name', 'asc');
     return users.map((user) => ({
       id: user.id,
       last_name: user.last_name,
       first_name: user.first_name,
       email: user.email,
       phone: user.phone,
+      role:  user.role,
       created_at: formatDate(new Date(user.created_at)),
     }));
   };

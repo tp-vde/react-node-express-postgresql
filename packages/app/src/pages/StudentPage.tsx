@@ -60,7 +60,7 @@ export default function StudentPage() {
   return (
     <Container maxWidth="lg">
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography variant="h6" component="h1" gutterBottom>
           Liste des étudiants de VDE
         </Typography>
         <div style={{ height: 400, width: '100%' }}>

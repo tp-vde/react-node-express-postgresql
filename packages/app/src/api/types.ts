@@ -15,3 +15,13 @@ export type IFormInput = {
   email: string;
   password: string;
 };
+
+
+export type UserRow = {
+  id?: string;
+  last_name: string;
+  first_name: string;
+  email: string;
+  phone: string;
+  role: string;
+}

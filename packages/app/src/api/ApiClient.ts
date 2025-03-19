@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch';
-import { StudentRow } from './types';
+import { StudentRow, UserRow } from './types';
 import { accountSrevice } from '../helper/accountSrevice';
 
 
@@ -29,8 +29,8 @@ export class ApiClient {
 
 
 
-  async getStudentById(userId: string): Promise<StudentRow[]> {
-    const queryString = new URLSearchParams({userId});
+  async getStudentById(stCode: string): Promise<StudentRow[]> {
+    const queryString = new URLSearchParams({stCode});
     const token = accountSrevice.getToken();
     const fetchUrl = `${this.backendUrl}/api/student?${queryString}`;
     const response = await fetch(fetchUrl, {
@@ -48,7 +48,7 @@ export class ApiClient {
   };
 
 
-  async pushStudent(user: StudentRow): Promise<boolean> {
+  async pushStudent(student: StudentRow): Promise<boolean> {
     const token = accountSrevice.getToken();
     const fetchUrl = `${this.backendUrl}/api/student`;
     const response = await fetch(fetchUrl, {
@@ -57,7 +57,7 @@ export class ApiClient {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(student),
     });
     if (!response.ok) {
         throw Error('Error');
@@ -65,8 +65,8 @@ export class ApiClient {
     return true;
   };
 
-  async deleteStudent(userId: string): Promise<boolean> {
-    const queryString = new URLSearchParams(userId.toString());
+  async deleteStudent(stCode: string): Promise<boolean> {
+    const queryString = new URLSearchParams({stCode});
     const token = accountSrevice.getToken();
     const fetchUrl = `${this.backendUrl}/api/student?${queryString}`;
     const response = await fetch(fetchUrl, {
@@ -82,9 +82,8 @@ export class ApiClient {
     return true;
   };
 
-
   
-  async getUserData(): Promise<StudentRow[]> {
+  async getUserData(): Promise<UserRow[]> {
     const token = accountSrevice.getToken();
     const response = await fetch(`${this.backendUrl}/api/users`, {
       method: "GET",
@@ -96,8 +95,42 @@ export class ApiClient {
     if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-    const data: StudentRow[] = await response.json();
+    const data: UserRow[] = await response.json();
     return data;
+  };
+
+  async deleteUser(userId: string): Promise<boolean> {
+    const queryString = new URLSearchParams({userId});
+    const token = accountSrevice.getToken();
+    const fetchUrl = `${this.backendUrl}/api/user?${queryString}`;
+    const response = await fetch(fetchUrl, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+    });
+    if (!response.ok) {
+        throw Error('Error');
+    }
+    return true;
+  };
+
+  async pushUser(user: UserRow): Promise<boolean> {
+    const token = accountSrevice.getToken();
+    const fetchUrl = `${this.backendUrl}/api/user`;
+    const response = await fetch(fetchUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(user),
+    });
+    if (!response.ok) {
+        throw Error('Error');
+    }
+    return true;
   };
 
 };
