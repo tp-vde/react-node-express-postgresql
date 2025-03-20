@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
   Paper,
   Typography,
   TextField,
@@ -25,6 +24,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { ApiClient } from "../api/ApiClient";
 import { UserRow } from "../api/types";
 import { useForm, Controller } from "react-hook-form";
+import { Content } from "../components/app/Content";
+import { PageWithHeader } from "../components/CustomPages";
 
 
 const initialFormData: UserRow = {
@@ -143,7 +144,8 @@ function UserPage() {
   ];
 
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
+    <PageWithHeader title='VDE : Users Management' >
+     <Content>
       <Grid container spacing={2}>
       <Grid size={3} spacing={1}>
       <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
@@ -270,7 +272,8 @@ function UserPage() {
       </Dialog>
       </Grid>
       </Grid>
-    </Container>
+    </Content>
+    </PageWithHeader>
   );
 }
 

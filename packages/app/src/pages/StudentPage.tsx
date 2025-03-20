@@ -1,82 +1,214 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Paper, Typography } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import dayjs from 'dayjs';
-import { ApiClient } from '../api/ApiClient';
+import React, { useEffect, useState } from "react";
+import TextField from '@mui/material/TextField';
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import Grid from '@mui/material/Grid2';
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import dayjs from "dayjs";
+import { ApiClient } from "../api/ApiClient";
+import { StudentRow } from "../api/types";
+import { useForm, Controller } from "react-hook-form";
+import { Content } from "../components/app/Content";
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import { PageWithHeader } from "../components/CustomPages";
 
-
-interface Student {
-  code: string;
-  name: string;
-  first_name: string;
-  email: string;
-  phone: string;
-  speciality: string;
-  entry_at: string;
-  first_departure_mission_at?: string | null;
-  created_at?: string;
+const initialFormData: StudentRow = {
+  code: "",
+  name: "",
+  first_name: "",
+  email: "",
+  phone: "",
+  speciality: "",
+  entry_at: null,
+  first_departure_mission_at: null,
 };
-
 
 const apiService = new ApiClient("http://localhost:7007");
 
-export default function StudentPage() {
-  const [students, setStudents] = useState<Student[]>([]);
+function StudentPage() {
+  const [formData, setFormData] = useState<StudentRow>(initialFormData);
+  const [rows, setRows] = useState<StudentRow[]>([]);
+  const [editMode, setEditMode] = useState(false);
+
+  const {
+    control,
+    formState: { errors },
+  } = useForm({
+    defaultValues: initialFormData,
+  });
 
   useEffect(() => {
-    fetchStudents();
+    fetchUsers();
   }, []);
 
-  const fetchStudents = async () => {
+  const fetchUsers = async () => {
     try {
       const response = await apiService.getStudentData();
-      setStudents(response as Student[]);
+      setRows(response);
     } catch (error) {
-      console.error('Error fetching students:', error);
+      console.error("Error fetching registrations:", error);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await apiService.pushStudent(formData);
+      fetchUsers();
+      setFormData(initialFormData);
+      setEditMode(false);
+    } catch (error) {
+      console.error("Error saving registration:", error);
     }
   };
 
   const columns: GridColDef[] = [
-    { field: 'code', headerName: 'Code', width: 100 },
-    { field: 'name', headerName: 'Name', width: 130 },
-    { field: 'first_name', headerName: 'First Name', width: 130 },
-    { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'phone', headerName: 'Phone', width: 130 },
-    { field: 'speciality', headerName: 'Speciality', width: 130 },
+    { field: "code", headerName: "Code", width: 130  },
+    { field: "name", headerName: "Nom" , width: 130},
+    { field: "first_name", headerName: "Prénom" , width: 130},
+    { field: "email", headerName: "Email" , width: 200},
+    { field: "phone", headerName: "Téléphone" , width: 130},
+    { field: "speciality", headerName: "Spécialité" },
     {
-      field: 'entry_at',
-      headerName: 'Entry Date',
-      width: 130,
-      valueGetter: (params) => dayjs(params.row.entry_at).format('YYYY-MM-DD')
+      field: "entry_at",
+      headerName: "Date d'entrée",
+      valueGetter: (params) => {
+        return params.row.entry_at
+          ? dayjs(params.row.entry_at).format("YYYY-MM-DD")
+          : "";
+      },
     },
     {
-      field: 'first_departure_mission_at',
-      headerName: 'First Departure Date',
-      width: 130,
-      valueGetter: (params) => params.row.first_departure_mission_at ? dayjs(params.row.first_departure_mission_at).format('YYYY-MM-DD') : ''
-    }
+      field: "first_departure_mission_at",
+      headerName: "Date de mission",
+      valueGetter: (params) => {
+        return params.row.first_departure_mission_at
+          ? dayjs(params.row.first_departure_mission_at).format("YYYY-MM-DD")
+          : "";
+      },
+    },
   ];
 
   return (
-    <Container maxWidth="lg">
-      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <Typography variant="h6" component="h1" gutterBottom>
-          Liste des étudiants de VDE
+    <PageWithHeader title='VDE' >
+    <Content >
+      <Grid container spacing={2}>
+      <Grid size={3} spacing={1}>
+      <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
+        <Typography variant="h6" component="h1" gutterBottom align="center">
+          {editMode ? "Modifier l'inscription" : "Formulaire d'inscription"}
         </Typography>
-        <div style={{ height: 400, width: '100%' }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          <Stack spacing={1}>
+            <TextField
+              required
+              fullWidth
+              label="Code"
+              name="code"
+              value={formData.code}
+              onChange={handleChange}
+              variant="outlined"
+              sx={{ height:''}}
+            />
+          <Controller
+            name="name"
+            control={control}
+            rules={{
+              required: 'Le nom est requis',
+              minLength: {
+                value: 2,
+                message: 'Le nom doit contenir au moins 2 caractères',
+              },
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="Nom"
+                value={formData.name}
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+                error={!!errors.name}
+                helperText={errors.name?.message}
+              />
+            )}
+          />
+            <TextField
+              required
+              fullWidth
+              label="Prénom"
+              name="first_name"
+              value={formData.first_name}
+              onChange={handleChange}
+              variant="outlined"
+            />
+            <Controller
+              name="email"
+              control={control}
+              rules={{
+                required: "L'email est requis",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Adresse email invalide",
+                },
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  required
+                  fullWidth
+                  label="Email"
+                  name="email"
+                  type="email"
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                  value={formData.email}
+                  onChange={handleChange}
+                  variant="outlined"
+                />
+              )}
+            />  
+          </Stack>
+        </Box>
+      </Paper>
+      </Grid>
+
+      <Grid size={9} spacing={1}>
+      <Paper elevation={3} sx={{ p:2 }}>
+        <Typography variant="h6" component="h2" gutterBottom>
+          Liste des étudiants
+        </Typography>
+        <Box sx={{ height: 400, width: "100%" }}>
           <DataGrid
-            rows={students}
+            rows={rows}
             columns={columns}
+            getRowId={(row) => row.code}
             pageSizeOptions={[5, 10, 25]}
-            getRowId={(students) => students.code}
             initialState={{
               pagination: {
-                paginationModel: { pageSize: 5 }
-              }
+                paginationModel: { pageSize: 5 },
+              },
             }}
           />
-        </div>
+        </Box>
       </Paper>
-    </Container>
+
+      </Grid>
+      </Grid>
+   </Content>
+   </PageWithHeader>
   );
 }
+
+export default StudentPage;

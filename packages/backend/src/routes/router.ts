@@ -43,8 +43,7 @@ export function createRouter(options: RouterOptions): express.Router {
       const options = { ...mailOptions,  to: req.body.email, html: `<p>Veuillez trouver votre mot de passe ci-après : ${password}</p>` };
       await sendMail(options);
       res.status(201).json({ message: "Utilisateur créé avec succès" });
-      logger.info(
-        `Utilisateur créé avec succès :: ${req.body.first_name} ${req.body.last_name}`
+      logger.info(`Utilisateur créé avec succès :: ${req.body.first_name} ${req.body.last_name}`
       );
     } catch (err: any) {
       res.status(500).json({ message: err.message });
@@ -82,9 +81,7 @@ export function createRouter(options: RouterOptions): express.Router {
       res.status(204).send({ message: "Student delete successfully" });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
-      logger.info(
-        `Unable to get metadata for '${req.query.userId}' with error ${err.messag}`
-      );
+      logger.info(`Unable to get metadata for '${req.query.userId}' with error ${err.messag}`);
     }
   });
 
@@ -112,9 +109,7 @@ export function createRouter(options: RouterOptions): express.Router {
     try {
       await studentService.createStudent(req.body);
       res.status(201).json({ message: "Student upserted successfully" });
-      logger.info(
-        `Student upserted successfully :: ${req.query.first_name} ${req.query.name}`
-      );
+      logger.info(`Student upserted successfully :: ${req.query.first_name} ${req.query.name}`);
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }
@@ -130,9 +125,7 @@ export function createRouter(options: RouterOptions): express.Router {
       res.status(204).send({ message: "Student delete successfully" });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
-      logger.info(
-        `Unable to get metadata for '${req.query.stCode}' with error ${err.messag}`
-      );
+      logger.info(`Unable to get metadata for '${req.query.stCode}' with error ${err.messag}`);
     }
   });
 

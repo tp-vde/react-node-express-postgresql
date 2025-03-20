@@ -3,19 +3,7 @@ import { Config, HttpServerOptions } from './types';
 const DEFAULT_PORT = 7007;
 const DEFAULT_HOST = '';
 
-/**
- * Reads {@link HttpServerOptions} from a {@link @backstage/config#Config} object.
- *
- * @public
- * @remarks
- *
- * La configuration fourni doit contenir directement les clés « listen » et supplémentaires.
- *
- * @example
- * ```ts
- * const opts = readHttpServerOptions(config.getConfig('backend'));
- * ```
- */
+
 export function readHttpServerOptions(config?: Config): HttpServerOptions {
   return {
     listen: readHttpListenOptions(config),

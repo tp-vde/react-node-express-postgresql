@@ -1,5 +1,5 @@
 import React from 'react';
-import Root from './components/Pages/Root';
+import Root from './components/app/Root';
 
 function App() {
   return (

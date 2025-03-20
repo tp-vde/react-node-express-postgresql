@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { AppContext } from './AppProvider';
 import {
-  Box,
   Drawer,
   List,
   ListItem,
@@ -23,8 +22,6 @@ import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 const Navigation: React.FC = () => {
   const { isSidebarOpen, toggleSidebar } = useContext(AppContext);
 
-
-
   const navigate = useNavigate();
     const logout = () => {
       accountSrevice.logout();
@@ -33,7 +30,7 @@ const Navigation: React.FC = () => {
     
   return (
     <>
-      <AppBar
+      {/* <AppBar
         position="fixed"
         sx={{  zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
@@ -59,51 +56,52 @@ const Navigation: React.FC = () => {
             <LogoutIcon />
           </IconButton>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
 
       <Drawer
         variant="permanent"
         open={isSidebarOpen}
         sx={{
-          width: isSidebarOpen ? 240 : 56,
+          width: isSidebarOpen ? 224 : 56,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: isSidebarOpen ? 240 : 56,
+            background: '#410c93',
+            width: isSidebarOpen ? 224 : 56,
             boxSizing: 'border-box',
-            transition: 'width 0.3s ease',
+            transition: 'width 200ms cubic-bezier(0.4, 0, 0.6, 1)',
           },
         }}
       >
         <List>
           <ListItem>
             <IconButton onClick={toggleSidebar}>
-              <MenuIcon />
+              <MenuIcon sx={{color: '#FFF'}} />
             </IconButton>
           </ListItem>
           <Divider />
-          <ListItem component="a" href="/">
+          <ListItem sx={{color: '#FFF'}} component="a" href="/">
             <ListItemIcon>
-              <Home />
+              <Home  sx={{color: '#FFF'}} />
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem component="a" href="/student">
+          <ListItem sx={{color: '#FFF'}} component="a" href="/student">
             <ListItemIcon>
-              <Person />
+              <Person sx={{color: '#FFF'}}/>
             </ListItemIcon>
             <ListItemText primary="Students" />
           </ListItem>
-          <ListItem component="a" href="/admin">
+          <ListItem component="a" href="/management">
             <ListItemIcon>
-              <AdminPanelSettings />
+              <AdminPanelSettings sx={{color: '#FFF'}}/>
+            </ListItemIcon>
+            <ListItemText sx={{color: '#FFF'}} primary="Management" />
+          </ListItem>
+          <ListItem sx={{color: '#FFF'}} component="a" href="/admin">
+            <ListItemIcon>
+              <PersonAddAltIcon sx={{color: '#FFF'}}/>
             </ListItemIcon>
             <ListItemText primary="Admin" />
-          </ListItem>
-          <ListItem component="a" href="/users">
-            <ListItemIcon>
-              <PersonAddAltIcon />
-            </ListItemIcon>
-            <ListItemText primary="Users" />
           </ListItem>
         </List>
       </Drawer>

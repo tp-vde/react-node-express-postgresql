@@ -14,6 +14,8 @@ import { getAccessToken } from '../../api/CredentialsProvider';
 import { useNavigate } from 'react-router-dom';
 import { accountSrevice } from '../../helper/accountSrevice';
 import { IFormInput } from '../../api/types';
+import { PageWithHeader } from '../../components/CustomPages';
+import { Content } from '../../components/app/Content';
 
 
 // Définir le schéma de validation avec Yup
@@ -64,7 +66,8 @@ const LoginPage: React.FC = () => {
   };
     
   return (
-    <Container maxWidth="sm">
+    <PageWithHeader title='VDE : Student Management' >
+
       <Paper elevation={3} sx={{ padding: 4, marginTop: 8 }}>
         <Typography variant="h4" component="h1" align="center" gutterBottom>
           Connexion
@@ -115,7 +118,8 @@ const LoginPage: React.FC = () => {
           </Button>
         </Box>
       </Paper>
-    </Container>
+ 
+       </PageWithHeader>
   );
 };
 

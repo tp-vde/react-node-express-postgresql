@@ -24,12 +24,12 @@ const Root: React.FC = () => {
         <Box sx={{ display: 'flex' }}>
           <Navigation />
           <Box
-            component="main"
-            sx={{
-              flexGrow: 1,
-              p: 3,
-              transition: 'margin 0.3s ease',
-            }}
+            // component="main"
+            // sx={{
+            //   flexGrow: 1,
+            //   p: 3,
+            //   transition: 'margin 0.3s ease',
+            // }}
           >
          <Routes>
           <Route path="/login" element={<LoginPage />} />
@@ -43,7 +43,7 @@ const Root: React.FC = () => {
             }
           />
           <Route
-            path="/admin"
+            path="/management"
             element={
               <AuthProvider>
                 <AdminPage />
@@ -51,7 +51,7 @@ const Root: React.FC = () => {
             }
           />
           <Route
-            path="/users"
+            path="/admin"
             element={
               <AuthProvider>
                 <UserPage />

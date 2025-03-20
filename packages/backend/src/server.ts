@@ -4,7 +4,7 @@ import { createRouter } from './routes/router';
 import { ConfigReader } from "./config/ConfigReader";
 import { fileConfig } from "./config/paths";
 import { readHttpServerOptions } from "./config/hostConfig";
-import { loggerService } from "./types/types";
+import { loggerService } from './utils/logger';
 import bodyParser from 'body-parser';
 
 
@@ -27,7 +27,7 @@ async function startServer() {
 
     app.listen(listenPort, (err: any) => {
       if(err) throw new Error(`Erreur :: ${err}` );
-      console.log(`Serveur démarré sur le port ${listenPort}`);
+      logger.info(`Serveur démarré sur le port ${listenPort}`);
     });
 
   } catch (error) {

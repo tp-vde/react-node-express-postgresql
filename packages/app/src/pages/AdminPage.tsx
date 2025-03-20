@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
-  Paper,
   Typography,
   TextField,
   Button,
-  Box,
   Stack,
   IconButton,
   Dialog,
@@ -22,6 +19,11 @@ import dayjs from "dayjs";
 import { ApiClient } from "../api/ApiClient";
 import { StudentRow } from "../api/types";
 import { useForm, Controller } from "react-hook-form";
+import { Content } from "../components/app/Content";
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import { PageWithHeader } from "../components/CustomPages";
+
 
 
 const initialFormData: StudentRow = {
@@ -125,16 +127,15 @@ function AdminPage() {
     }
   };
   const columns: GridColDef[] = [
-    { field: "code", headerName: "Code", width: 100 },
-    { field: "name", headerName: "Nom", width: 130 },
-    { field: "first_name", headerName: "Prénom", width: 130 },
-    { field: "email", headerName: "Email", width: 200 },
-    { field: "phone", headerName: "Téléphone", width: 130 },
-    { field: "speciality", headerName: "Spécialité", width: 130 },
+    { field: "code", headerName: "Code" },
+    { field: "name", headerName: "Nom" },
+    { field: "first_name", headerName: "Prénom" },
+    { field: "email", headerName: "Email" },
+    { field: "phone", headerName: "Téléphone" },
+    { field: "speciality", headerName: "Spécialité" },
     {
       field: "entry_at",
       headerName: "Date d'entrée",
-      width: 130,
       valueGetter: (params) => {
         return params.row.entry_at
           ? dayjs(params.row.entry_at).format("YYYY-MM-DD")
@@ -144,7 +145,6 @@ function AdminPage() {
     {
       field: "first_departure_mission_at",
       headerName: "Date de mission",
-      width: 130,
       valueGetter: (params) => {
         return params.row.first_departure_mission_at
           ? dayjs(params.row.first_departure_mission_at).format("YYYY-MM-DD")
@@ -154,7 +154,6 @@ function AdminPage() {
     {
       field: "actions",
       headerName: "Actions",
-      width: 130,
       renderCell: (params: GridRenderCellParams) => (
         <Box>
           <IconButton onClick={() => handleEdit(params.row.code)}>
@@ -169,7 +168,8 @@ function AdminPage() {
   ];
 
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
+    <PageWithHeader title='VDE : Student Management' >
+    <Content>
       <Grid container spacing={2}>
       <Grid size={3} spacing={1}>
       <Paper elevation={3} sx={{ p: 2, mb: 4 }}>
@@ -327,7 +327,7 @@ function AdminPage() {
           />
         </Box>
       </Paper>
- 
+
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Confirmer la suppression</DialogTitle>
         <DialogContent>
@@ -342,7 +342,8 @@ function AdminPage() {
       </Dialog>
       </Grid>
       </Grid>
-    </Container>
+   </Content>
+   </PageWithHeader>
   );
 }
 
