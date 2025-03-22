@@ -23,6 +23,8 @@ import { Content } from "../components/app/Content";
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { PageWithHeader } from "../components/CustomPages";
+import { accountSrevice } from "../helper/accountSrevice";
+import { Navigate } from "react-router-dom";
 
 
 
@@ -54,15 +56,22 @@ function AdminPage() {
   });
 
   useEffect(() => {
-    fetchUsers();
+     if (accountSrevice.isExpired()) {
+        localStorage.removeItem('token');
+        return () => {<Navigate to="/auth/login" />
+      }
+    };
+    fetchStudents();
   }, []);
-
-  const fetchUsers = async () => {
+  
+  const fetchStudents = async () => {
+    console.log("isExpired::", accountSrevice.isExpired());
+    
     try {
       const response = await apiService.getStudentData();
       setRows(response);
     } catch (error) {
-      console.error("Error fetching registrations:", error);
+      console.error("Error fetching students:", error);
     }
   };
 
@@ -92,7 +101,7 @@ function AdminPage() {
     e.preventDefault();
     try {
       await apiService.pushStudent(formData);
-      fetchUsers();
+      fetchStudents();
       setFormData(initialFormData);
       setEditMode(false);
     } catch (error) {
@@ -118,7 +127,7 @@ function AdminPage() {
     if (selectedId) {
       try {
         await apiService.deleteStudent(selectedId);
-        fetchUsers();
+        fetchStudents();
         setOpenDialog(false);
         setSelectedId(null);
       } catch (error) {
@@ -291,7 +300,6 @@ function AdminPage() {
                 textField: {
                   fullWidth: true,
                   variant: "outlined",
-                  required: true,
                 },
               }}
             />

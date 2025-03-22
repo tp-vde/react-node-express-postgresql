@@ -39,15 +39,15 @@ function StudentPage() {
   });
 
   useEffect(() => {
-    fetchUsers();
+    fetchStudents();
   }, []);
 
-  const fetchUsers = async () => {
+  const fetchStudents = async () => {
     try {
       const response = await apiService.getStudentData();
       setRows(response);
     } catch (error) {
-      console.error("Error fetching registrations:", error);
+      console.error("Error fetching students:", error);
     }
   };
 
@@ -63,7 +63,7 @@ function StudentPage() {
     e.preventDefault();
     try {
       await apiService.pushStudent(formData);
-      fetchUsers();
+      fetchStudents();
       setFormData(initialFormData);
       setEditMode(false);
     } catch (error) {

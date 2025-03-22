@@ -75,7 +75,7 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
-  router.delete("/user",  async (req, res) => {
+  router.delete("/user", authMiddleware(['admin']), async (req, res) => {
     try {
       await userService.deleteUser(req.query.userId as string);
       res.status(204).send({ message: "Student delete successfully" });
@@ -105,7 +105,7 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
-  router.post("/student", authMiddleware(['user', 'admin']), async (req, res) => {
+  router.post("/student", authMiddleware(['admin']), async (req, res) => {
     try {
       await studentService.createStudent(req.body);
       res.status(201).json({ message: "Student upserted successfully" });

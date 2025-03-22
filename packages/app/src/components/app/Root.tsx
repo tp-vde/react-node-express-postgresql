@@ -17,54 +17,35 @@ import UserPage from '../../pages/UserPage';
 const Root: React.FC = () => {
   return (
     <ThemeProvider theme={lightTheme}>
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <Router>
-      <AppProvider>
-        <CssBaseline />
-        <Box sx={{ display: 'flex' }}>
-          <Navigation />
-          <Box
-            // component="main"
-            // sx={{
-            //   flexGrow: 1,
-            //   p: 3,
-            //   transition: 'margin 0.3s ease',
-            // }}
-          >
-         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<HomePage />} />
-          <Route
-            path="/student"
-            element={
-              <AuthProvider>
-                <StudentPage />
-              </AuthProvider>
-            }
-          />
-          <Route
-            path="/management"
-            element={
-              <AuthProvider>
-                <AdminPage />
-              </AuthProvider>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <AuthProvider>
-                <UserPage />
-              </AuthProvider>
-            }
-          />
-          <Route path="/auth/*" element={<AuthRouter />} />
-        </Routes>
-          </Box>
-        </Box>
-      </AppProvider>
-    </Router>
-    </LocalizationProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Router>
+          <AppProvider>
+            <CssBaseline />
+            <Box sx={{ display: "flex" }}>
+              <Navigation />
+              <Box
+              // component="main"
+              // sx={{
+              //   flexGrow: 1,
+              //   p: 3,
+              //   transition: 'margin 0.3s ease',
+              // }}
+              >
+                <Routes>
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/" element={<HomePage />} />
+                  <Route element={<AuthProvider />}>
+                    <Route path="/student" element={<StudentPage />} />
+                    <Route path="/management" element={<AdminPage />} />
+                    <Route path="/admin" element={<UserPage />} />
+                  </Route>
+                  <Route path="/auth/*" element={<AuthRouter />} />
+                </Routes>
+              </Box>
+            </Box>
+          </AppProvider>
+        </Router>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 };
