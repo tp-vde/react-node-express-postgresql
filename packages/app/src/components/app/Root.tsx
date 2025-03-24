@@ -1,53 +1,32 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AppProvider } from './AppProvider';
-import Navigation from './Navigation';
-import { Box, CssBaseline, ThemeProvider } from '@mui/material';
-import LoginPage from '../../pages/Auth/LoginPage';
-import StudentPage from '../../pages/StudentPage';
-import AuthProvider from '../../helper/AuthProvider';
-import AdminPage from '../../pages/AdminPage';
-import AuthRouter from '../../pages/Auth/AuthRouter';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { lightTheme } from '../../theme';
-import HomePage from '../../pages/HomePage';
-import UserPage from '../../pages/UserPage';
+import React, { PropsWithChildren } from "react";
+import { Box, CssBaseline } from "@mui/material";
+import Navigation from "./Navigation";
 
-const Root: React.FC = () => {
-  return (
-    <ThemeProvider theme={lightTheme}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Router>
-          <AppProvider>
-            <CssBaseline />
-            <Box sx={{ display: "flex" }}>
-              <Navigation />
-              <Box
-              // component="main"
-              // sx={{
-              //   flexGrow: 1,
-              //   p: 3,
-              //   transition: 'margin 0.3s ease',
-              // }}
-              >
-                <Routes>
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/" element={<HomePage />} />
-                  <Route element={<AuthProvider />}>
-                    <Route path="/student" element={<StudentPage />} />
-                    <Route path="/management" element={<AdminPage />} />
-                    <Route path="/admin" element={<UserPage />} />
-                  </Route>
-                  <Route path="/auth/*" element={<AuthRouter />} />
-                </Routes>
-              </Box>
-            </Box>
-          </AppProvider>
-        </Router>
-      </LocalizationProvider>
-    </ThemeProvider>
-  );
-};
+
+export const Root = ({ children }: PropsWithChildren<{}>) => (
+  <Box sx={{ display: "flex" }}>
+    <CssBaseline />
+    {/* Drawer */}
+    <Navigation />
+    {/* Page principale */}
+    <Box
+      component="main"
+      sx={{
+        backgroundColor: '#F8F8F8',
+        flexGrow: 1,
+        // p: 3,
+        // width: `calc(100% - ${open ? drawerWidth : collapsedDrawerWidth}px)`,
+        transition: (theme) =>
+          theme.transitions.create("width", {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+      }}
+    >
+      {/* Contenu de la page principale */}
+      {children}
+    </Box>
+  </Box>
+);
 
 export default Root;

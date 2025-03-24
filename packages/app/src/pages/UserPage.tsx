@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Paper,
   Typography,
@@ -26,7 +26,11 @@ import { UserRow } from "../api/types";
 import { useForm, Controller } from "react-hook-form";
 import { Content } from "../components/app/Content";
 import { PageWithHeader } from "../components/CustomPages";
+import { AppContext } from "../components/app/AppProvider";
 
+
+const drawerWidth = 224;
+const collapsedDrawerWidth = 56;
 
 const initialFormData: UserRow = {
   last_name: "",
@@ -37,7 +41,7 @@ const initialFormData: UserRow = {
 };
 
 const apiService = new ApiClient("http://localhost:7007");
-
+  
 function UserPage() {
   const [formData, setFormData] = useState<UserRow>(initialFormData);
   const [rows, setRows] = useState<UserRow[]>([]);
@@ -45,6 +49,7 @@ function UserPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  const { isPinned, toggleSidebar } = useContext(AppContext);
   const handleChangeRole = (event: SelectChangeEvent) => {
 
     setFormData(() => ({
@@ -155,6 +160,7 @@ function UserPage() {
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Stack spacing={1}>
             <TextField
+              size="small"
               required
               fullWidth
               label="Nom"
@@ -164,6 +170,7 @@ function UserPage() {
               variant="outlined"
             />
             <TextField
+              size="small"
               required
               fullWidth
               label="Prénom"
@@ -185,6 +192,7 @@ function UserPage() {
               render={({ field }) => (
                 <TextField
                   {...field}
+                  size="small"
                   required
                   fullWidth
                   label="Email"
@@ -199,6 +207,7 @@ function UserPage() {
               )}
             />
             <TextField
+              size="small"
               required
               fullWidth
               label="Téléphone"
@@ -243,7 +252,7 @@ function UserPage() {
         <Typography variant="h6" component="h2" gutterBottom>
           Liste des utilisateurs
         </Typography>
-        <Box sx={{ height: 400, width: "100%" }}>
+        <Box sx={{ minHeight: 320, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}

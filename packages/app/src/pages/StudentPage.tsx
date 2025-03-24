@@ -110,6 +110,7 @@ function StudentPage() {
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <Stack spacing={1}>
             <TextField
+              size="small"
               required
               fullWidth
               label="Code"
@@ -132,6 +133,7 @@ function StudentPage() {
             render={({ field }) => (
               <TextField
                 {...field}
+                size="small"
                 required
                 fullWidth
                 label="Nom"
@@ -145,6 +147,7 @@ function StudentPage() {
             )}
           />
             <TextField
+              size="small"
               required
               fullWidth
               label="Prénom"
@@ -166,6 +169,7 @@ function StudentPage() {
               render={({ field }) => (
                 <TextField
                   {...field}
+                  size="small"
                   required
                   fullWidth
                   label="Email"
@@ -183,13 +187,12 @@ function StudentPage() {
         </Box>
       </Paper>
       </Grid>
-
       <Grid size={9} spacing={1}>
       <Paper elevation={3} sx={{ p:2 }}>
         <Typography variant="h6" component="h2" gutterBottom>
           Liste des étudiants
         </Typography>
-        <Box sx={{ height: 400, width: "100%" }}>
+        <Box sx={{ minHeight: 320, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}
@@ -203,7 +206,6 @@ function StudentPage() {
           />
         </Box>
       </Paper>
-
       </Grid>
       </Grid>
    </Content>

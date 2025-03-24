@@ -1,25 +1,48 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode, useEffect } from 'react';
+import { LocalStorage } from './localStorage';
 
-type AppContextType = {
-  isSidebarOpen: boolean;
-  toggleSidebar: () => void;
+export type SidebarPinState = {
+  isPinned: boolean;
+  toggleSidebar: () => any;
 };
 
-export const AppContext = createContext<AppContextType>({
-  isSidebarOpen: true,
+export type SidebarPinStateContextType = {
+  isPinned: boolean;
+  toggleSidebar: () => any;
+};
+
+export const AppContext = createContext<SidebarPinState>({
+  isPinned: true,
   toggleSidebar: () => {},
 });
 
-export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+export const AppProvider = (props:{ children: ReactNode }) => {
+  const { children } = props;
+  const [isPinned, setIsPinned] = useState(() =>
+    LocalStorage.getSidebarPinState(),
+  );
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
+  useEffect(() => {
+    LocalStorage.setSidebarPinState(isPinned);
+  }, [isPinned]);
+  
+  const toggleSidebar = () => setIsPinned(!isPinned);
 
   return (
-    <AppContext.Provider value={{ isSidebarOpen, toggleSidebar }}>
+    <AppContext.Provider value={{ isPinned, toggleSidebar }}>
       {children}
     </AppContext.Provider>
   );
 };
+
+export function PinStateProvider(props: {
+  children: ReactNode;
+  value: SidebarPinStateContextType;
+}) {
+  const { children, value } = props;
+  return (
+    <AppContext.Provider value={value}>
+        {children}
+    </AppContext.Provider>
+  );
+}
