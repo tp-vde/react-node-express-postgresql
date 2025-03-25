@@ -17,8 +17,6 @@ import AuthRouter from "./pages/Auth/AuthRouter";
 const routes = (
   <ThemeProvider theme={lightTheme}>
   <LocalizationProvider dateAdapter={AdapterDayjs}>
-  <Router>
-    <Box>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<HomePage />} />
@@ -29,8 +27,6 @@ const routes = (
         </Route>
         <Route path="/auth/*" element={<AuthRouter />} />
       </Routes>
-    </Box>
-  </Router>
 </LocalizationProvider>
 </ThemeProvider>
 );
