@@ -6,9 +6,9 @@ export type SidebarPinState = {
   toggleSidebar: () => any;
 };
 
-export type SidebarPinStateContextType = {
-  isPinned: boolean;
-  toggleSidebar: () => any;
+const defaultSidebarPinStateContext = {
+  isPinned: true,
+  toggleSidebar: () => {},
 };
 
 export const AppContext = createContext<SidebarPinState>({
@@ -37,7 +37,7 @@ export const AppProvider = (props:{ children: ReactNode }) => {
 
 export function PinStateProvider(props: {
   children: ReactNode;
-  value: SidebarPinStateContextType;
+  value: SidebarPinState;
 }) {
   const { children, value } = props;
   return (
@@ -46,3 +46,12 @@ export function PinStateProvider(props: {
     </AppContext.Provider>
   );
 }
+
+export const useSidebarPinState = (): SidebarPinState => {
+  const pinStateContext = defaultSidebarPinStateContext;
+  if (pinStateContext === undefined) {
+    throw new Error('No context found for version 1.');
+  }
+
+  return pinStateContext;
+};

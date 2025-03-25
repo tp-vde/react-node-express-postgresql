@@ -6,10 +6,10 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Toolbar,
   IconButton,
   Divider,
   ListItemButton,
+  Link,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AdminPanelSettings, Home, Person } from "@mui/icons-material";
@@ -17,11 +17,47 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
-
+import  LogoIcon from "./lib/LogoIcon";
+import makeStyles from "@mui/styles/makeStyles";
 
 
 const drawerWidthClosed = 72;
+const logoHeight = 32;
 const drawerWidthOpen= 224;
+
+const useSidebarLogoStyles = makeStyles({
+  root: {
+    width: drawerWidthClosed,
+    height: 3 * logoHeight,
+    display: 'flex',
+    flexFlow: 'row nowrap',
+    alignItems: 'center',
+    marginBottom: -14,
+  },
+  link: {
+    width: drawerWidthClosed,
+    marginLeft: 24,
+  },
+});
+
+
+const SidebarLogo = () => {
+  const classes = useSidebarLogoStyles();
+
+  return (
+    <div className={classes.root}>
+      <Link
+        href="#"
+        underline="none"
+        className={classes.link}
+      >
+       <LogoIcon />
+      </Link>
+    </div>
+  );
+};
+
+
 
 const Navigation: React.FC = () => {
   const { isPinned, toggleSidebar } = useContext(AppContext);
@@ -102,8 +138,9 @@ const Navigation: React.FC = () => {
           },
         }}
       >
-        <Toolbar />
+        {/* <Toolbar /> */}
         <Box sx={{ overflow: "hidden" }}>
+        <SidebarLogo />
           <List>
             <ListItem>
               <IconButton onClick={toggleSidebar}>

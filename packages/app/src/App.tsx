@@ -1,7 +1,7 @@
 import Root from './components/app/Root';
 import { AppProvider } from './components/app/AppProvider';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Box, ThemeProvider } from "@mui/material";
+import { Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { lightTheme } from "./theme";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";

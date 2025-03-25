@@ -3,6 +3,7 @@ import { Box, CssBaseline } from "@mui/material";
 import Navigation from "./Navigation";
 import { BrowserRouter as Router } from "react-router-dom";
 
+
 export const Root = ({ children }: PropsWithChildren<{}>) => (
   <Box sx={{ display: "flex" }}>
     <Router>
