@@ -7,7 +7,6 @@ import {
   TextField,
   Button,
   Typography,
-  Container,
   Paper,
 } from "@mui/material";
 import { getAccessToken } from "../../api/CredentialsProvider";
@@ -16,6 +15,26 @@ import { accountSrevice } from "../../helper/accountSrevice";
 import { IFormInput } from "../../api/types";
 import { PageWithHeader } from "../../components/CustomPages";
 import { Content } from "../../components/app/Content";
+import Grid from '@mui/material/Grid2';
+
+import makeStyles from '@mui/styles/makeStyles';
+import logo from '../../components/asset/logo-isoset.png'
+  
+
+const useStyles = makeStyles({
+  png: {
+    width: 'auto',
+    height: '3rem',
+    marginBottom: '1rem'
+  },
+});
+
+const LogoIcon = () => {
+  const classes = useStyles();
+
+  return <img className={classes.png} src={logo} alt="Logo" />;
+};
+
 
 // Définir le schéma de validation avec Yup
 const schema = yup.object({
@@ -66,9 +85,23 @@ const LoginPage: React.FC = () => {
   return (
     <PageWithHeader title="VDE : Student Management">
       <Content>
-        <Paper sx={{ padding: 4, marginTop: 8, width: "25rem" }}>
+      <Grid container 
+           alignItems="center"
+           color= '#FFFFFF'
+           justifyContent="center"
+            >
+        <Paper elevation={5} sx={{ 
+          display: "flex",
+          flexDirection: 'column',
+           justifyContent: "center",
+           alignItems: "center",
+           padding: 4, marginTop: 8, 
+           width: "25rem"
+           }}>
+
+        <LogoIcon />
           <Typography variant="h4" component="h1" align="center" gutterBottom>
-            Connexion
+            ISOSET
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <Controller
@@ -116,6 +149,7 @@ const LoginPage: React.FC = () => {
             </Button>
           </Box>
         </Paper>
+        </Grid>
       </Content>
     </PageWithHeader>
   );

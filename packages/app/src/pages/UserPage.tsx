@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Paper,
   Typography,
@@ -26,11 +26,7 @@ import { UserRow } from "../api/types";
 import { useForm, Controller } from "react-hook-form";
 import { Content } from "../components/app/Content";
 import { PageWithHeader } from "../components/CustomPages";
-import { AppContext } from "../components/app/AppProvider";
 
-
-const drawerWidth = 224;
-const collapsedDrawerWidth = 56;
 
 const initialFormData: UserRow = {
   last_name: "",
@@ -49,7 +45,6 @@ function UserPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const { isPinned, toggleSidebar } = useContext(AppContext);
   const handleChangeRole = (event: SelectChangeEvent) => {
 
     setFormData(() => ({

@@ -8,6 +8,11 @@ import Grid from '@mui/material/Grid2';
 import Link from '@mui/material/Link';
 import makeStyles from '@mui/styles/makeStyles';
 import { Theme } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from 'react-router-dom';
+import { accountSrevice } from '../../helper/accountSrevice';
+
 
 /** @public */
 export type HeaderClassKey =
@@ -200,12 +205,19 @@ export function Header(props: PropsWithChildren<Props>) {
   } = props;
   const classes = useStyles();
 
+  const navigate = useNavigate();
+  
   const appTitle = 'Vde';
   const documentTitle = pageTitleOverride || title;
   const pageTitle = title || pageTitleOverride;
   const titleTemplate = `${documentTitle} | %s | ${appTitle}`;
   const defaultTitle = `${documentTitle} | ${appTitle}`;
 
+  const logout = () => {
+    accountSrevice.logout();
+    navigate("/login");
+  };
+  
   return (
     <>
       <Helmet titleTemplate={titleTemplate} defaultTitle={defaultTitle} />
@@ -224,6 +236,24 @@ export function Header(props: PropsWithChildren<Props>) {
           />
           <SubtitleFragment classes={classes} subtitle={subtitle} />
         </Box>
+          <Grid container
+           direction= 'row'   
+           spacing={1}
+           alignItems="center"
+           color= '#FFFFFF'
+            >
+          <Typography >LOGOUT</Typography>
+            <IconButton size="small"
+            title="Logout"
+            color="inherit"
+            aria-label="logout"
+            onClick={logout}
+            edge="start"
+            sx={{ alignItems:'center', flexDirection:'row' }}
+          >  
+            <LogoutIcon />
+          </IconButton>
+          </Grid >
         <Grid container className={classes.rightItemsBox} spacing={4}>
           {children}
         </Grid>
