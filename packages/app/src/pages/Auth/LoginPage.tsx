@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { accountSrevice } from "../../helper/accountSrevice";
 import { IFormInput } from "../../api/types";
 import { PageWithHeader } from "../../components/CustomPages";
-import { Content } from "../../components/app/Content";
+import { Content } from "../../components/Root/Content";
 import Grid from '@mui/material/Grid2';
 
 import makeStyles from '@mui/styles/makeStyles';

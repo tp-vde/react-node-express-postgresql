@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, Paper } from "@mui/material";
-import { Content } from "../components/app/Content";
+import { Content } from "../components/Root/Content";
 import { PageWithHeader } from "../components/CustomPages";
 
 

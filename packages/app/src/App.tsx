@@ -1,5 +1,5 @@
-import Root from './components/app/Root';
-import { AppProvider } from './components/app/AppProvider';
+import Root from './components/Root/Root';
+import { AppProvider } from './components/Root/AppProvider';
 import { Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";

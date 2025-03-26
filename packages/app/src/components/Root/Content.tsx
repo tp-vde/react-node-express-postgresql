@@ -1,7 +1,7 @@
+import React, { PropsWithChildren } from 'react';
 import { Theme } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 import classNames from 'classnames';
-import React, { PropsWithChildren } from 'react';
 
 
 /** @public */
@@ -10,8 +10,6 @@ export type VdeContentClassKey = 'root' | 'stretch' | 'noPadding';
 const useStyles = makeStyles(
   (theme: Theme) => ({
     root: {
-      // background: 'green',
-      // marginTop: '3em',
       gridArea: 'pageContent',
       minWidth: 0,
       paddingTop: theme.spacing(3),
@@ -47,7 +45,6 @@ type Props = {
  * @public
  *
  */
-
 export function Content(props: PropsWithChildren<Props>) {
   const { className, stretch, noPadding, children, ...restProps } = props;
 

@@ -1,6 +1,7 @@
 import makeStyles from '@mui/styles/makeStyles';
 import React from 'react';
-import { Theme } from '@mui/material/styles';
+import { Theme, ThemeProvider } from '@mui/material/styles';
+import { lightTheme } from '../../theme';
 
 
 const useStyles = makeStyles(
@@ -38,8 +39,8 @@ export function Page(props: Props) {
   const { children } = props;
   const classes = useStyles();
   return (
-    // <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={lightTheme}>
       <main className={classes.root}>{children}</main>
-    // </ThemeProvider>
+    </ThemeProvider>
   );
 }

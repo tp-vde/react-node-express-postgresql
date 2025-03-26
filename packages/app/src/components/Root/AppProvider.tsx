@@ -17,7 +17,6 @@ export const AppContext = createContext<SidebarPinState>({
 });
 
 export const AppProvider = (props:{ children: ReactNode }) => {
-  const { children } = props;
   const [isPinned, setIsPinned] = useState(() =>
     LocalStorage.getSidebarPinState(),
   );
@@ -30,7 +29,7 @@ export const AppProvider = (props:{ children: ReactNode }) => {
 
   return (
     <AppContext.Provider value={{ isPinned, toggleSidebar }}>
-      {children}
+      {props.children}
     </AppContext.Provider>
   );
 };

@@ -24,7 +24,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { ApiClient } from "../api/ApiClient";
 import { UserRow } from "../api/types";
 import { useForm, Controller } from "react-hook-form";
-import { Content } from "../components/app/Content";
+import { Content } from "../components/Root/Content";
 import { PageWithHeader } from "../components/CustomPages";
 
 

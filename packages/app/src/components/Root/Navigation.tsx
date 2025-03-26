@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { AppContext } from "./AppProvider";
 import {
   Drawer,
@@ -9,7 +9,6 @@ import {
   IconButton,
   Divider,
   ListItemButton,
-  Link,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AdminPanelSettings, Home, Person } from "@mui/icons-material";
@@ -17,51 +16,21 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
-import  LogoIcon from "./lib/LogoIcon";
-import makeStyles from "@mui/styles/makeStyles";
+import { drawerWidthClosed, drawerWidthOpen } from "./LogoIcon";
+import SidebarLogo from "./LogoIcon";
 
-
-const drawerWidthClosed = 72;
-const logoHeight = 32;
-const drawerWidthOpen= 224;
-
-const useSidebarLogoStyles = makeStyles({
-  root: {
-    width: drawerWidthClosed,
-    height: 3 * logoHeight,
-    display: 'flex',
-    flexFlow: 'row nowrap',
-    alignItems: 'center',
-    marginBottom: -14,
-  },
-  link: {
-    width: drawerWidthClosed,
-    marginLeft: 24,
-  },
-});
-
-
-const SidebarLogo = () => {
-  const classes = useSidebarLogoStyles();
-
-  return (
-    <div className={classes.root}>
-      <Link
-        href="#"
-        underline="none"
-        className={classes.link}
-      >
-       <LogoIcon />
-      </Link>
-    </div>
-  );
-};
-
-
+enum State {
+  Closed,
+  Idle,
+  Open,
+}
 
 const Navigation: React.FC = () => {
   const { isPinned, toggleSidebar } = useContext(AppContext);
   const [activeItem, setActiveItem] = useState("Home");
+
+  const [state, setState] = useState(State.Closed);
+  const hoverTimerRef = useRef<number>(undefined);
 
   const theme = useTheme();
 
@@ -81,35 +50,80 @@ const Navigation: React.FC = () => {
     {
       text: "Management",
       path: "/management",
-      icon: (
-        <AdminPanelSettings />
-      ),
+      icon: <AdminPanelSettings />,
     },
     {
       text: "Admin",
       path: "/admin",
-      icon: (
-        <PersonAddAltIcon />
-      ),
+      icon: <PersonAddAltIcon />,
     },
   ];
-
 
   const handleItemClick = (text: string, path: string) => {
     setActiveItem(text);
     navigate(path);
   };
 
+  const handleOpen = () => {
+    if (isPinned) {
+      return;
+    }
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = undefined;
+    }
+
+    if (state !== State.Open) {
+      hoverTimerRef.current = window.setTimeout(() => {
+        hoverTimerRef.current = undefined;
+        setState(State.Open);
+      }, 10);
+
+      setState(State.Idle);
+    }
+  };
+
+  const handleClose = () => {
+    if (isPinned) {
+      return;
+    }
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = undefined;
+    }
+    if (state === State.Idle) {
+      setState(State.Closed);
+    } else if (state === State.Open) {
+      hoverTimerRef.current = window.setTimeout(() => {
+        hoverTimerRef.current = undefined;
+        setState(State.Closed);
+      }, 10);
+    }
+  };
+  const isOpen = state === State.Open || isPinned;
+
+  const setOpen = (open: boolean) => {
+    if (open) {
+      setState(State.Open);
+      toggleSidebar();
+    } else {
+      setState(State.Closed);
+      toggleSidebar();
+    }
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <Drawer
+        open={isOpen}
+        onMouseEnter={handleOpen}
+        onFocus={handleOpen}
+        onMouseLeave={handleClose}
+        onBlur={handleClose}
         variant="permanent"
-        open={isPinned}
         sx={{
           overflow: "hidden",
-          width: isPinned
-            ? drawerWidthOpen
-            : drawerWidthClosed,
+          width: isOpen ? drawerWidthOpen : drawerWidthClosed,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
             display: "flex",
@@ -121,15 +135,13 @@ const Navigation: React.FC = () => {
             overflowX: "hidden",
             msOverflowStyle: "none",
             scrollbarWidth: "none",
-            width: isPinned
-              ? drawerWidthOpen
-              : drawerWidthClosed,
+            width: isOpen ? drawerWidthOpen : drawerWidthClosed,
             boxSizing: "border-box",
             transition: theme.transitions.create("width", {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.enteringScreen,
             }),
-            ...(!isPinned && {
+            ...(!isOpen && {
               transition: theme.transitions.create("width", {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.leavingScreen,
@@ -140,10 +152,15 @@ const Navigation: React.FC = () => {
       >
         {/* <Toolbar /> */}
         <Box sx={{ overflow: "hidden" }}>
-        <SidebarLogo />
+          <SidebarLogo isPinned={isOpen} />
           <List>
             <ListItem>
-              <IconButton onClick={toggleSidebar}>
+              <IconButton
+                onClick={() => {
+                  setOpen(!isOpen);
+                  toggleSidebar();
+                }}
+              >
                 <MenuIcon sx={{ color: "#FFF" }} />
               </IconButton>
             </ListItem>
@@ -181,7 +198,11 @@ const Navigation: React.FC = () => {
                       activeItem === item.text ? `solid 3px #9BF0E1` : "none",
                   }}
                 >
-                  <ListItemIcon><span style={{ color: activeItem ? "#FFF" : "#b5b5b5" }}>{item.icon}</span></ListItemIcon>
+                  <ListItemIcon>
+                    <span style={{ color: activeItem ? "#FFF" : "#b5b5b5" }}>
+                      {item.icon}
+                    </span>
+                  </ListItemIcon>
                   <ListItemText primary={item.text} />
                 </ListItemButton>
               </ListItem>

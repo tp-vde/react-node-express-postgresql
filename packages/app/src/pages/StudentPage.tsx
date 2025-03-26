@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import { ApiClient } from "../api/ApiClient";
 import { StudentRow } from "../api/types";
 import { useForm, Controller } from "react-hook-form";
-import { Content } from "../components/app/Content";
+import { Content } from "../components/Root/Content";
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { PageWithHeader } from "../components/CustomPages";
