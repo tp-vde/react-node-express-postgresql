@@ -1,8 +1,8 @@
 import knex, { Knex } from 'knex';
-import config from "../../knexfile";
+import config from "./knexConnect";
 
 
-export class MigrationManager {
+export default class MigrationManager {
   private readonly dbName: string;
   private readonly knexInstance: Knex;
 
@@ -26,7 +26,18 @@ export class MigrationManager {
   }
 
   public async migrate(): Promise<void> {
-    await this.knexInstance.migrate.latest();
+    const knexCnx = knex({
+      ...config.development,
+      client: 'pg',
+      connection: {
+        ...(config.development.connection as object), 
+        database: this.dbName, 
+        password: 'password'
+      },
+    });
+
+    await knexCnx.migrate.latest();
+    await knexCnx.destroy();
     console.log('Migrations run successfully.');
   }
 
@@ -40,5 +51,4 @@ export class MigrationManager {
     console.log('Migrations rolled back.');
   }
 
-}
-
+};

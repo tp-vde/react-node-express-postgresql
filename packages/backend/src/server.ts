@@ -1,8 +1,21 @@
-import app from "./app";
-import { MigrationManager } from "./utils/MigrationManager";
+import MigrationManager from './utils/MigrationManager';
+import express from 'express';
+import { createRouter } from './routes/router';
+import { ConfigReader } from "./config/ConfigReader";
+import { fileConfig } from "./config/paths";
+import { readHttpServerOptions } from "./config/hostConfig";
+import { loggerService } from './utils/logger';
+import bodyParser from 'body-parser';
 
-const PORT = process.env.BACKEND_PORT || 7007;
-const databaseName = 'your_db_name';
+
+const config = new ConfigReader(fileConfig());
+const { listen: { port: listenPort } } = readHttpServerOptions(config.getConfig('backend'));
+
+const databaseName = 'vde_database';
+const logger = loggerService();
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/api', createRouter({logger}));
 
 async function startServer() {
   const migrationManager = new MigrationManager({ dbName: databaseName}); 
@@ -10,11 +23,11 @@ async function startServer() {
   try {
     await migrationManager.createDatabaseIfNotExists();
     await migrationManager.migrate();
-    // await migrationManager.close();
+    await migrationManager.close();
 
-    app.listen(PORT, (err: any) => {
+    app.listen(listenPort, (err: any) => {
       if(err) throw new Error(`Erreur :: ${err}` );
-      console.log(`Serveur démarré sur le port ${PORT}`);
+      logger.info(`Serveur démarré sur le port ${listenPort}`);
     });
 
   } catch (error) {

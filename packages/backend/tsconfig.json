@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
       // Options de compilation
-      "target": "es2022",  //Version de JavaScript cible (par exemple, es5, es6, es2020).
-      "module": "commonjs", //Système de modules à utiliser (par exemple, commonjs, esnext, amd).
+      "target": "ES2022",  //Version de JavaScript cible (par exemple, es5, es6, es2020).
+      "module": "CommonJS", //Système de modules à utiliser (par exemple, commonjs, esnext, amd).
       "outDir": "./dist", //Répertoire de sortie pour les fichiers JavaScript compilés.
       "rootDir": "./", //Répertoire racine des fichiers TypeScript.
       "strict": true, //Active toutes les vérifications strictes de TypeScript.
@@ -14,7 +14,7 @@
       "baseUrl": ".", //Répertoire de base pour résoudre les modules.
       "paths": { //Mappage des chemins d'importation personnalisés.
         // "*": ["node_modules/*", ],
-        "@/*": ["./src/*","./*"]
+        "../*": ["./src/*","./*"]
       }
     },
     //Options pour la vérification de type

@@ -1,0 +1,59 @@
+app:
+  title: Student Management System
+  version: 1.0.0
+  baseUrl: http://localhost:3000
+  feature:
+    useAuth: false
+
+organization:
+  name: My Company
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+    # Uncomment the following host directive to bind to specific interfaces
+    # host: 127.0.0.1
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    allowedHeaders: ['Content-Type', 'Authorization']
+    # credentials: true
+
+  database:
+    # client: better-sqlite3
+    # connection: ':memory:'
+    client: pg
+    connection:
+      host: 'localhost'
+      port: 5432
+      user: postgres
+      password: postgres
+  auth:
+  # dangerouslyDisableDefaultAuthPolicy: true
+  #   keys:
+  #     - secret: ${BACKEND_SECRET}
+  issuer: https://accounts.google.com
+  clientId: your-client-id
+  clientSecret: your-client-secret
+  callbackUrl: http://localhost:3000/auth/callback
+  scopes:
+    - openid
+    - profile
+    - email
+
+  roles:
+    - ADMIN
+    - USER
+    - GUEST
+  # jwt:
+  #   secret: your-jwt-secret
+  #   expiresIn: 1h
+
+proxy:
+  endpoints:
+    '/task/imports':
+      target: 'http://localhost:7007'
+      changeOrigin: true

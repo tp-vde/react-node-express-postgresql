@@ -12,6 +12,6 @@
       "resolveJsonModule": true,
       "isolatedModules": true
     },
-    "include": ["**/*.ts", "packages/backend/src/router.ts.old", "packages/backend/src/routes/userRoutes.ts.old"],
+    "include": ["**/*.ts", "packages/backend/src/*", "packages/app/src/components/defaultComponentThemes.ts.old"],
     "exclude": ["node_modules"]
   }

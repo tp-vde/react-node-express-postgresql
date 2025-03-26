@@ -1,8 +1,16 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import App from './App';
+import '@types/jest';
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  expect(getByText(/learn react/i)).toBeDefined();
-})
+
+describe('App', () => {
+  it('should render', async () => {
+    
+    const { getByText } = render(<App />);
+
+    await waitFor(() => {
+      expect(getByText(/learn react/i)).toBeDefined();
+    });
+  });
+});

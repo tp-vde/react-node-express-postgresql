@@ -25,7 +25,6 @@ export default [
         describe: "readonly",
         HTMLElement: "readonly",
         webpack: "readonly",
-        // console: "readonly"
       },
     },
     plugins: {
@@ -36,9 +35,21 @@ export default [
     rules: {
       ...eslint.configs.recommended.rules,
       ...tsEslint.configs.recommended.rules,
-      ...reactPlugin.configs.recommended.rules,
-      'no-undef': 'off'
-      // "@typescript-eslint/no-explicit-any": "error"
+      'no-undef': 'off',
+      "@typescript-eslint/no-explicit-any": "off",
+      "react/display-name": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "no-useless-escape": "off",
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          args: 'after-used',
+          ignoreRestSiblings: true,
+          argsIgnorePattern: '^_',
+        },
+      ],
+      "react/react-in-jsx-scope": "off",
     },
     settings: {
       env: ['browser'],

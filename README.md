@@ -75,17 +75,27 @@ Gestion des dépendances :
 Assurez-vous que les dépendances sont correctement isolées entre le client et le serveur.
 
 #### Récupération sur gitlab et premier lancement du projet sur son poste:
-1 - Installer Doker desktop: [Download Docker Desktop](https://desktop.docker.com/win/main/amd64/181591/Docker%20Desktop%20Installer.exe).
+1- Installer Doker desktop: [Download Docker Desktop](https://desktop.docker.com/win/main/amd64/181591/Docker%20Desktop%20Installer.exe).
+2- Lancer les commandes `yarn install` puis `yarn tsc`
 
-####  Démarrer les services avec Docker Compose
-`docker-compose up --build`
+#### Lancer l'application
+1- Construire et démarrer les conteneurs avec la commande : `docker-compose up --build` 
+2- Exécuter les migrations avec la commande : `docker-compose exec backend yarn migrate` ( ! optionnel)
+3️- Accéder aux services
+Frontend : http://localhost:3000
+Backend API : http://localhost:7007
+pgAdmin : http://localhost:8082
+(Email : postgres@bg.com, Password : password)
+PostgreSQL : Accessible via localhost:5432
 
-## la commande CMD `docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $INSTANCE_ID` permet d'obtenir l'adresse IP d'une instance. Exp: postgres.
+
+3- Démarrer les services avec Docker Compose: `docker-compose up --build`
+
+## la commande CMD `docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres` permet d'obtenir l'adresse IP d'une instance. Exp: postgres.
 
 #### Pour arrêter les services, utilisez la commande suivante : `docker-compose down`
 
-####  Pour supprimer également les volumes (y compris les données de PostgreSQL) :
-`docker-compose down -v`
+####  Pour supprimer également les volumes (y compris les données de PostgreSQL) : `docker-compose down -v`
 
 ### procedure manuelle pour créer une base de données:
 Dans le terminal du Docker desktop, tapez la commande : `psql -U postgres` puis `CREATE DATABASE vde_database ;`;
@@ -95,36 +105,49 @@ Dans le terminal VsCode pour miger les scripts de la bdd avec la commande : `yar
 -   Faire les test du CRUD avec le curl ou postman
 
 
-
-
-
-
 # Migrations
-La commande `yarn knex init -x ts` (l'option -x ts pour le typescript) permet de creer le fichier de configuration knexfile.ts qui contient nos différentes configurations de la base de données. Une fois que vous avez un fichier knexfile.js/.ts, vous pouvez utiliser l'outil de migration pour créer des fichiers de migration vers le répertoire spécifié (migrations par défaut). 
+La commande `yarn knex init` (l'option -x ts pour le typescript) permet de creer le fichier de configuration knexfile.ts qui contient nos différentes configurations de la base de données. Une fois que vous avez un fichier knexfile.js/.ts, vous pouvez utiliser l'outil de migration pour créer des fichiers de migration vers le répertoire spécifié (migrations par défaut). 
 !!! Supprimer le bloc `sqlite3` avant d'exécuter la nouvellemigration.
-La création de nouveaux fichiers de migration peut être réalisée en exécutant la commande `yarn knex migrate:make table_name -x ts`. 
+La création de nouveaux fichiers de migration peut être réalisée en exécutant la commande `yarn --cwd packages\backend knex migrate:make table_name`. 
 !!! 
+
+
+## Generate a JWT Secret : 
+Le lien `https://jwtsecret.com/generate` permet de generer une Clé secrète pour JWT
 <!-- ///////////////////////////
-
-
-
--- Lancer l'application
-1- Construire et démarrer les conteneurs
-
-commande : docker-compose up --build
-2- Exécuter les migrations
-commande : docker-compose exec backend yarn migrate
-3️- Accéder aux services
-Frontend : http://localhost:3000
-Backend API : http://localhost:7007
-pgAdmin : http://localhost:8082
-(Email : postgres@bg.com, Password : password)
-PostgreSQL : Accessible via localhost:5432
-
-rm -rf node_modules yarn.lock  # (Sous Linux/macOS) 
-rmdir /s /q node_modules & del package-lock.json  # (Sous Windows CMD)
+Erreur : exec /app/entrypoint.sh: no such file or directory => assurez-vous que le fichier entrypoint.sh utilise des fins de ligne Unix (LF) et non Windows (CRLF).
+yarn cache clean --force
+rm -rf node_modules yarn.lock  # (Sous Linux/macOS)
+chmod 755 nodce_modules
+rmdir /s /q node_modules & del yarn.lock  # (Sous Windows CMD)
 yarn install
+
+chmod -R 755 node_modules
 
 Les droits d’exécution : chmod +x packages/backend/entrypoint.sh 
 "start": "cross-env PORT=3000 react-scripts start",
+
+
+Tache : 
+1- Sécurisez l’accès à une application en utilisant l’authentification et l'autorisation.
+2- Création de la Table d'administration pour gerer les accès à la page d'acceuil :
+    - ID => number
+    - Nom => nom de l'utilisateur
+    - Prenom
+    - Email
+    - Role : {'1', '2', '3'} => enum
+    - Password
+    - created_at, 
+    - updated_at
+
+
+Table de role
+id, name
+
+1- user
+2- moderator
+3- admin
+
+Table user_roles
+role_id, user_id
 -->
