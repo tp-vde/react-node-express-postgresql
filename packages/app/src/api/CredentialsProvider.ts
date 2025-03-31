@@ -18,14 +18,14 @@ export const getAccessToken = async (credential: IFormInput): Promise<string> =>
     }
     const key = await response.json();
     return key.token;
-  };
+};
   
-  
-  export const getCredentials = async (): Promise<IFormInput> => {
+export const getCredentials = async (): Promise<IFormInput> => {
     const fetchUrl = `${backendUrl}/api/profile`;
-    const token = getAccessToken({email: "user2@example.com", password: "password123"})
+    const token = localStorage.getItem('token');
+
     const response = await fetch(fetchUrl, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
@@ -35,6 +35,24 @@ export const getAccessToken = async (credential: IFormInput): Promise<string> =>
     throw new Error("Network response was not ok");
   }
   const credential = await response.json();
-  return credential.token;
+  return credential.user;
+};
 
-  };
+export const disconnected = async (): Promise<IFormInput> => {
+  const fetchUrl = `${backendUrl}/api/logout`;
+  const token = localStorage.getItem('token');
+  const response = await fetch(fetchUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  return await response.json();;
+
+
+};

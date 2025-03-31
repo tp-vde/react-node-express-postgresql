@@ -2,8 +2,8 @@ import { formatDate, UserRoleRow, UserRow } from '../types/types';
 import knex from 'knex';
 import config from '../utils/knexConnect';
 import { v4 as uuid } from 'uuid';
-
-var generator = require('generate-password');
+import generator from 'generate-password';
+import bcrypt from 'bcrypt';
 
 const USER = 'users';
 const USER_ROLE = 'user_roles';
@@ -31,6 +31,15 @@ export class UserService {
       .onConflict(["email", 'phone'])
       .merge();
 
+    const generatePassword = generator.generate({
+      length: 12,
+      numbers: true,
+      symbols: true,
+      uppercase: true,
+      excludeSimilarCharacters: true,
+      strict: true,
+    });
+    const hashPassword = await bcrypt.hash(generatePassword, 12);
     await dbClient(USER_ROLE)
       .insert({
         email: user.email,
@@ -39,7 +48,8 @@ export class UserService {
       })
       .onConflict(["email"])
       .merge(['role']);
-      const pass =  await dbClient(USER_ROLE).where({ email: user.email}).select("password").first(); 
+      // on envoie le mot de passe généré par email : à changer après première connexion
+      const pass =  await dbClient(USER_ROLE).where({ email: user.email}).select("password").first(); // remplacer par generatePassword 
       return pass.password;
   }
 

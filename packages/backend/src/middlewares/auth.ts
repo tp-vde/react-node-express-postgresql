@@ -50,7 +50,7 @@ export const authMiddleware = (roles: string[]) => {
  * @param jwtExpiresIn : Durée de validité
  * @returns
  */
-export const generateToken = async (user: {
+export const generateAccessToken = async (user: {
   email: string;
   password: string;
   role: string;
@@ -95,3 +95,28 @@ export const verifyToken = async (
 
     return { subject: `appli:${payload.exp}`};
   }
+
+
+
+    /**
+   * Valide la force d'un mot de passe
+   */
+    const validatePasswordStrength = (password: string): boolean =>{
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      return regex.test(password);
+    }
+
+
+    // const  register = async (req: Request, res: Response) =>{
+    //   try {
+    //     const { password } = req.body;
+  
+    //     // Validation du mot de passe
+    //     if (!validatePasswordStrength(password)) {
+    //       return res.status(400).json({
+    //         message:
+    //           'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial',
+    //       });
+    //     }
+
+    //    }

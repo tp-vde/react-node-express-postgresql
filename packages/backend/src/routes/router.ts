@@ -1,13 +1,14 @@
 import express , { Request, Response } from "express";
 import Router from "express-promise-router";
 import { UserService } from "../services";
-import { StudentRow, UserRoleRow, UserRow } from "../types/types";
-import { corsMiddleware } from "../utils/cors";
+import { StudentRow, UserRow } from "../types/types";
+import { corsMiddleware, sessionMiddleware } from "../utils/cors";
 import * as winston from "winston";
 import bodyParser from "body-parser";
-import { authMiddleware, generateToken } from "../ahuth/authMiddleware";
+import { authMiddleware, generateAccessToken } from "../middlewares/auth";
 import { StudentService } from "../services/StudentService";
 import { mailOptions, sendMail } from "../notifications/sendmail";
+import bcrypt from 'bcrypt';
 
 export type RouterOptions = {
   logger: winston.Logger;
@@ -23,6 +24,7 @@ export function createRouter(options: RouterOptions): express.Router {
   const router = Router();
   router.use(express.json());
   router.use(corsMiddleware());
+  router.use(sessionMiddleware());
   router.use(bodyParser.urlencoded({ extended: false }));
   router.use(bodyParser.json());
 
@@ -54,12 +56,25 @@ export function createRouter(options: RouterOptions): express.Router {
   router.post("/login", async (req: any, res: any) => {
     const { email, password } = req.body;
     const user = await userService.getUserRoleById(email, password);
-    if (!user) {
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    
+    if (!user) { // remplacer par passwordMatch
       return res.status(401).json({ message: "Identifiants invalides" });
     }
 
-    const token = await generateToken(user);
+    const token = await generateAccessToken(user);
     res.json({ message: "Connexion réussie", token });
+  });
+
+  // Route de déconnexion
+  router.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+      if (err) {
+        return res.status(500).json({ message: 'Erreur lors de la déconnexion ou aucune session active' });
+      }
+      res.clearCookie('connect.sid'); // Nom du cookie de session
+      res.json({ message: 'Déconnexion réussie' });
+    });
   });
 
   // Route protégée pour les utilisateurs
@@ -86,10 +101,10 @@ export function createRouter(options: RouterOptions): express.Router {
   });
 
   // Route protégée : accès seulement si l'utilisateur est authentifié
-  router.get("/profile", (req: any, res: any) => {
+  router.get("/profile", authMiddleware(['user', 'admin']),(req: any, res: any) => {
     res.json({
       message: "Bienvenue sur votre profil",
-      user: req.user,
+      user: {...req.user, password: undefined , exp: undefined , iat: undefined},
     });
   });
 

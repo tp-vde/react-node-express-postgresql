@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -9,16 +9,14 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { getAccessToken } from "../../api/CredentialsProvider";
 import { useNavigate } from "react-router-dom";
-import { accountSrevice } from "../../helper/accountSrevice";
 import { IFormInput } from "../../api/types";
 import { PageWithHeader } from "../../components/CustomPages";
 import { Content } from "../../components/Root/Content";
 import Grid from '@mui/material/Grid2';
-
 import makeStyles from '@mui/styles/makeStyles';
 import logo from '../../components/asset/logo-isoset.png'
+import { useAuth } from "../../components/CustomPages/AuthContext";
   
 
 const useStyles = makeStyles({
@@ -31,7 +29,6 @@ const useStyles = makeStyles({
 
 const LogoIcon = () => {
   const classes = useStyles();
-
   return <img className={classes.png} src={logo} alt="Logo" />;
 };
 
@@ -55,24 +52,26 @@ const LoginPage: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
-  const [credentials, setCredentials] =
-    useState<IFormInput>(initialCredentials);
-
+  const [credentials, setCredentials] = useState<IFormInput>(initialCredentials);
+  const { login, isAuthenticated } = useAuth();
+  
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-      const token = await getAccessToken(credentials);
-      if (token) {
-        accountSrevice.saveToken(token);
-        navigate("/student");
-      }
+      await login(credentials);
     } catch (error) {
       console.error("Error connect to students:", error);
     }
   };
+
+    useEffect(() => {
+      if (isAuthenticated) {
+        navigate("/student");
+      }
+    }, [isAuthenticated, navigate]);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
