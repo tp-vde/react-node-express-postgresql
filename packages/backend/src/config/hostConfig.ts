@@ -1,4 +1,4 @@
-import { Config, HttpServerOptions } from './types';
+import { Config, HttpServerOptions } from './types.js';
 
 const DEFAULT_PORT = 7007;
 const DEFAULT_HOST = '';

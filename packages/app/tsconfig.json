@@ -12,21 +12,13 @@
       "node_modules/@types",
       "./src/types"
     ],
-    "types": ["node"],
     "resolveJsonModule": true,
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],     
-    
-    // "moduleResolution": "bundler",
-    // "allowImportingTsExtensions": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*", "**/*.ts", "**/*.tsx", "*.png"],
   "exclude": ["node_modules"],
-  // "references": [{ "path": "./tsconfig.node.json" }]
 }

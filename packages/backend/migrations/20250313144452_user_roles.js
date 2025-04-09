@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 
-exports.up = async function up(knex) {
+export async function up(knex) {
     return knex.schema.createTable('user_roles' , table => {
       table.comment('Table des roles');
       table
@@ -25,15 +25,15 @@ exports.up = async function up(knex) {
           indexName: 'user_roles_unique_idx',
         });
     })
-  };
+  }
   
   /**
    * @param { import("knex").Knex } knex
    * @returns { Promise<void> }
    */
-  exports.down = async function down(knex) {
+  export async function down(knex) {
     return knex.schema
     .dropTable('user_roles')
-  };
+  }
   
 

@@ -1,5 +1,3 @@
-import winston from "winston";
-
 export interface UserRow {
   id:string;
   last_name: string;

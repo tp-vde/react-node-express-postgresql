@@ -1,14 +1,19 @@
 {
   "name": "backend",
+  "description": "Monorepo with React frontend and Node Express backend",
   "version": "0.0.0",
   "private": "true",
-  "main": "server.ts",
+  "main": "dist/server.js",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "test": "mocha --exit tests/*",
-    "tsc": "tsc",
-    "tsc:watch": "tsc --watch",
-    "start": "nodemon dist/src/server.js",
-    "start:watch": "yarn tsc && concurrently \"yarn tsc:watch\" \"yarn start\"",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "start": "node --no-warnings dist/server.js",
+    "start:watch": "yarn build && concurrently \"yarn build:watch\" \"yarn start\"",
     "dev": "ts-node ./server.ts",
     "lint": "eslint **/*.ts",
     "lint:fix": "eslint **/*.ts --fix",
@@ -57,7 +62,6 @@
     "sequelize": "^6.37.5",
     "serialize-error": "^12.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3",
     "uuid": "^11.1.0",
     "winston": "^3.17.0",
     "yaml": "^2.7.0"

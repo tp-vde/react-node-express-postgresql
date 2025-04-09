@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex';
-import config from "./knexConnect";
+import config from "./knexConnect.js";
 
 
 export default class MigrationManager {

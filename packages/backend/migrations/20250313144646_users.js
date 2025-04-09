@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = async function up(knex) {
+export async function up(knex) {
     return knex.schema.createTable('users' , table => {
       table.comment('Table des utilisateurs');
       table
@@ -43,7 +43,7 @@ exports.up = async function up(knex) {
    * @param { import("knex").Knex } knex
    * @returns { Promise<void> }
    */
-  exports.down = async function down(knex) {
+  export async function down(knex) {
     return knex.schema
     .dropTable('users')
   };

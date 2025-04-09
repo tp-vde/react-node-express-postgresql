@@ -1,6 +1,6 @@
-import { formatDate, UserRoleRow, UserRow } from '../types/types';
+import { formatDate, UserRoleRow, UserRow } from '../types/types.js';
 import knex from 'knex';
-import config from '../utils/knexConnect';
+import config from '../utils/knexConnect.js';
 import { v4 as uuid } from 'uuid';
 import generator from 'generate-password';
 import bcrypt from 'bcrypt';

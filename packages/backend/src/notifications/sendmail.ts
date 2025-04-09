@@ -1,6 +1,6 @@
-import Mail from 'nodemailer/lib/mailer';
+// import Mail from 'nodemailer/lib/mailer/index.js';
 
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 // Configurer le transporteur Sendmail
 const transporterUnix = nodemailer.createTransport({
@@ -28,7 +28,7 @@ const transporter = nodemailer.createTransport({
 
 
 // Options de l'e-mail
-export const mailOptions: Mail.Options = {
+export const mailOptions: any = {
   from: 'testsvde1@gmail.com', // Expéditeur
   to: '', // Destinataire
   subject: 'Test d\'envoi d\'e-mail avec Sendmail', // Sujet
@@ -36,7 +36,7 @@ export const mailOptions: Mail.Options = {
   html: '<p>Ceci est un test d\'envoi d\'e-mail avec <b>Sendmail</b>.</p>', // Corps du message (HTML)
 };
 
-export const sendMail = async (options: Mail.Options) => {
+export const sendMail = async (options: any) => {
   try {
     console.log(`E-mail envoyé avec succès à ${options.to}`);
     await transporter.sendMail(options);

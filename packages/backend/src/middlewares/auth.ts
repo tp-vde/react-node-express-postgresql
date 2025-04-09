@@ -1,6 +1,6 @@
 import { NextFunction } from 'express';
 import { base64url, decodeJwt, decodeProtectedHeader, jwtVerify, SignJWT } from 'jose';
-import { config } from '../config';
+import { config } from '../config.js';
 // import { IRequestUser, IUserData } from '../types/types';
 
 const SECONDS_IN_MS = 1000;

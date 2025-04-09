@@ -1,8 +1,8 @@
 import cors, { CorsOptions } from 'cors';
-import { fileConfig } from '../config/paths';
-import { ConfigReader } from '../config/ConfigReader';
+import { fileConfig } from '../config/paths.js';
+import { ConfigReader } from '../config/ConfigReader.js';
 import { RequestHandler } from 'express';
-import { JsonObject } from '../config/types';
+import { JsonObject } from '../config/types.js';
 import session from 'express-session';
 
 export function corsMiddleware(): RequestHandler {

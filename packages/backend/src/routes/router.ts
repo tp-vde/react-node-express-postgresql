@@ -1,14 +1,14 @@
 import express , { Request, Response } from "express";
 import Router from "express-promise-router";
-import { UserService } from "../services";
-import { StudentRow, UserRow } from "../types/types";
-import { corsMiddleware, sessionMiddleware } from "../utils/cors";
+import bcrypt from 'bcrypt';
+import { UserService } from "../services/UserService.js";
+import { StudentRow, UserRow } from "../types/types.js";
+import { corsMiddleware, sessionMiddleware } from "../utils/cors.js";
 import * as winston from "winston";
 import bodyParser from "body-parser";
-import { authMiddleware, generateAccessToken } from "../middlewares/auth";
-import { StudentService } from "../services/StudentService";
-import { mailOptions, sendMail } from "../notifications/sendmail";
-import bcrypt from 'bcrypt';
+import { authMiddleware, generateAccessToken } from "../middlewares/auth.js";
+import { StudentService } from "../services/StudentService.js";
+import { mailOptions, sendMail } from "../notifications/sendmail.js";
 
 export type RouterOptions = {
   logger: winston.Logger;
@@ -39,7 +39,7 @@ export function createRouter(options: RouterOptions): express.Router {
   /**
    * Route d'inscription des utilisateurs en base
    */
-  router.post("/user", authMiddleware(['admin']), async (req: Request, res: Response): Promise<any>  => {
+  router.post("/user", async (req: Request, res: Response): Promise<any>  => {
     try {
       const password = await userService.createUser(req.body);
       const options = { ...mailOptions,  to: req.body.email, html: `<p>Veuillez trouver votre mot de passe ci-après : ${password}</p>` };
