@@ -12,7 +12,7 @@
     "test": "mocha --exit tests/*",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "start": "node --no-warnings dist/server.js",
+    "start": "nodemon --no-warnings dist/server.js",
     "start:watch": "yarn build && concurrently \"yarn build:watch\" \"yarn start\"",
     "dev": "ts-node ./server.ts",
     "lint": "eslint **/*.ts",

@@ -1,67 +1,80 @@
-# Étape 1 : Image de build
-FROM node:21-alpine AS builder
-
-# Crée un répertoire de travail
+# Étape de construction pour le backend
+FROM node:21-alpine AS backend-builder
 WORKDIR /app
 
-# Copie tous les fichiers nécessaires depuis la racine
-COPY package.json yarn.lock tsconfig.json ./
-COPY .gitpod.yml servers.json README.md CONTRIBUTING.md app-config.yaml start.sh ./
+# Copier les fichiers nécessaires pour le backend
+COPY package.json yarn.lock ./
+COPY packages/backend/package.json packages/backend/
+COPY packages/app/package.json packages/app/
 
-# Copie les packages (app + backend)
-COPY packages/app ./packages/app
-COPY packages/backend ./packages/backend
+# Installer toutes les dépendances (y compris devDependencies)
+RUN yarn install --frozen-lockfile --production=false
 
-# Installation des dépendances à la racine
+# Copier le reste des fichiers backend
+COPY packages/backend packages/backend
+COPY tsconfig.json .
+
+# Construire le backend
+RUN yarn --cwd packages/backend build
+
+# Étape de construction pour le frontend
+FROM node:21-alpine AS frontend-builder
+WORKDIR /app
+
+# Copier les fichiers de dépendances
+COPY --from=backend-builder /app/package.json /app/yarn.lock ./
+COPY --from=backend-builder /app/packages/app/package.json packages/app/
+
+# Installer les dépendances du frontend
 RUN yarn install --frozen-lockfile
 
-# Build du frontend
+# Copier le reste des fichiers frontend
+COPY packages/app packages/app
+COPY tsconfig.json .
+
+# Construire le frontend
 RUN yarn --cwd packages/app build
 
-
-# # Étape de construction pour le backend
-# FROM node:21-alpine AS backend-builder
-
-# WORKDIR /app
-
-# # Copier les fichiers nécessaires pour le backend
-# COPY package.json yarn.lock ./
-# COPY packages/backend/package.json packages/backend/
-# RUN yarn install --frozen-lockfile --production=false
-
-# COPY package.json yarn.lock tsconfig.json ./
-# COPY .gitpod.yml servers.json README.md ./
-
-# # Copier tout le code du backend
-# COPY packages/backend packages/backend
-# # Builder le backend (si nécessaire pour TypeScript)
-# RUN cd packages/backend && yarn build
-
-# # Étape 2: Builder pour le frontend React
-# FROM node:21-alpine AS frontend-builder
-
-# WORKDIR /app
-
-# # Copier les fichiers nécessaires pour le frontend
-# COPY package.json yarn.lock ./
-# COPY packages/app/package.json packages/app/package.json
-# RUN yarn install --frozen-lockfile --production=false
-
-# # Copier tout le code frontend
-# COPY packages/app packages/app
-# RUN cd packages/app && yarn build
-
-# Étape finale: Image de production
-FROM node:21-alpine
-
+# Étape pour les dépendances de production
+FROM node:21-alpine AS production-deps
 WORKDIR /app
+COPY package.json yarn.lock ./
+COPY packages/backend/package.json packages/backend/
+RUN yarn install --frozen-lockfile --production
 
-# Installer les dépendances de production pour le backend
-COPY --from=builder /app .
+# Image de production
+FROM nginx:alpine
 
-# Expose les ports
-EXPOSE 3000
-EXPOSE 7007 
+# Configurer Nginx pour le frontend
+COPY --from=frontend-builder /app/packages/app/build /usr/share/nginx/html
+COPY config/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Commande par défaut (modifiable via docker-compose)
-CMD ["yarn", "start"]
+# Copier les dépendances de production
+COPY --from=production-deps /app/node_modules ./node_modules
+COPY --from=production-deps /app/packages/backend/node_modules ./packages/backend/node_modules
+
+# Copier le backend construit
+COPY --from=backend-builder /app/packages/backend/dist ./backend/dist
+COPY --from=backend-builder /app/packages/backend/migrations ./backend/migrations
+COPY --from=backend-builder /app/packages/backend/package.json ./backend/
+COPY app-config.yaml ./backend/
+
+# Installer NGINX 
+RUN apk add --no-cache nginx
+
+# Installer Node.js pour exécuter le backend
+RUN apk add --no-cache nodejs
+
+# Copier les fichiers de configuration partagés
+# COPY app-config.yaml .
+COPY config config
+
+WORKDIR /backend
+
+# Exposer les ports
+EXPOSE 7007 3000
+
+# Commande pour démarrer à la fois Nginx et le backend Node.js
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

@@ -117,6 +117,7 @@ Le lien `https://jwtsecret.com/generate` permet de generer une Clé secrète pou
 <!-- ///////////////////////////
 Nettoyage complet (le plus simple)
 docker system prune -a --volumes
+docker system prune -a --volumes --force
 
 Erreur : exec /app/entrypoint.sh: no such file or directory => assurez-vous que le fichier entrypoint.sh utilise des fins de ligne Unix (LF) et non Windows (CRLF).
 yarn cache clean --force
@@ -154,4 +155,7 @@ docker-compose build  puis docker-compose up backend
 
 docker-compose build --no-cache backend
 
+
+Vérifier les processus en cours : # Dans votre conteneur => docker-compose exec app netstat -tulnp
+Forcer l'arrêt du processus : docker-compose exec app pkill -f "node.*7007"
 -->
