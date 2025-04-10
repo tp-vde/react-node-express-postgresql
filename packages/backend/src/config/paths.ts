@@ -27,10 +27,9 @@ export function fileConfig() {
 
   let targetRoot = "";
   const getTargetRoot = () => {
+    const existsApp = fs.existsSync(resolvePath(targetDir, "app-config.yaml"));
     if (!targetRoot) {
-      targetRoot =
-        targetDir ??
-        findRootPath(targetDir, (path) => {
+      targetRoot = existsApp ? targetDir : findRootPath(targetDir, (path) => {
           try {
             const content = fs.readFileSync(path, "utf8");
             const data = JSON.parse(content);
@@ -40,11 +39,11 @@ export function fileConfig() {
               `Failed to parse package.json file while searching for root, ${error}`
             );
           }
-        }) ??
-        targetDir;
+        }) as string;
     }
     return targetRoot;
   };
+  
   const configPath = path.resolve(getTargetRoot(), "app-config.yaml");
   if (fse.pathExistsSync(configPath)) {
     const fileContents = fse.readFileSync(configPath, "utf8");
@@ -65,7 +64,7 @@ export function findRootPath(
     if (exists && filterFunc(packagePath)) {
       return path;
     }
-
+   
     const newPath = dirname(path);
     if (newPath === path) {
       return undefined;

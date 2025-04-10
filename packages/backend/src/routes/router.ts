@@ -8,7 +8,7 @@ import * as winston from "winston";
 import bodyParser from "body-parser";
 import { authMiddleware, generateAccessToken } from "../middlewares/auth.js";
 import { StudentService } from "../services/StudentService.js";
-import { mailOptions, sendMail } from "../notifications/sendmail.js";
+import { mailOptions, sendEmail } from "../notifications/sendmail.js";
 
 export type RouterOptions = {
   logger: winston.Logger;
@@ -43,7 +43,7 @@ export function createRouter(options: RouterOptions): express.Router {
     try {
       const password = await userService.createUser(req.body);
       const options = { ...mailOptions,  to: req.body.email, html: `<p>Veuillez trouver votre mot de passe ci-après : ${password}</p>` };
-      await sendMail(options);
+      await sendEmail(options);
       res.status(201).json({ message: "Utilisateur créé avec succès" });
       logger.info(`Utilisateur créé avec succès :: ${req.body.first_name} ${req.body.last_name}`
       );
@@ -55,10 +55,9 @@ export function createRouter(options: RouterOptions): express.Router {
   // Route de connexion
   router.post("/login", async (req: any, res: any) => {
     const { email, password } = req.body;
-    const user = await userService.getUserRoleById(email, password);
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    
-    if (!user) { // remplacer par passwordMatch
+    const user = await userService.getUserRoleById(email);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({ message: "Identifiants invalides" });
     }
 

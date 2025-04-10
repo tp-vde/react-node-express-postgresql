@@ -52,6 +52,23 @@ backend:
   #   secret: your-jwt-secret
   #   expiresIn: 1h
 
+  email:
+    transporter:
+      host: smtp.gmail.com
+      port: 587
+      secure: false
+      auth:
+        user: testsvde1@gmail.com
+        pass: kdeh fipg rpxe lmxq
+
+    mailOptions:
+      from: VILLAGE DE L'EMPLOI
+      to: ''
+      subject: Initialisation du mot de passe 
+      # text: 'Ceci est un test d\'envoi d\'e-mail avec Sendmail.'  ==> Corps du message (texte)
+      html: <p>Bonjour, <br/> Ceci est un test d\'envoi d\'e-mail avec <b>Sendmail</b>.</p>,  # Corps du message (HTML)
+
+
 proxy:
   endpoints:
     '/task/imports':

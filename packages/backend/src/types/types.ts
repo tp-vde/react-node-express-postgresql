@@ -39,7 +39,6 @@ export function formatDate(nwdate: Date) {
   return `${day}-${month}-${year}`;
 }
 
-
 export interface IUserData {
   exp: any;
   email: string;

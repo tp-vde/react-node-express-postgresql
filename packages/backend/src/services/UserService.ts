@@ -31,26 +31,18 @@ export class UserService {
       .onConflict(["email", 'phone'])
       .merge();
 
-    const generatePassword = generator.generate({
-      length: 12,
-      numbers: true,
-      symbols: true,
-      uppercase: true,
-      excludeSimilarCharacters: true,
-      strict: true,
-    });
-    const hashPassword = await bcrypt.hash(generatePassword, 12);
+    const plainPassword: any = generator.generate({ length: 12, numbers: true });
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(plainPassword, salt);
     await dbClient(USER_ROLE)
       .insert({
         email: user.email,
         role: user.role,
-        password:  generator.generate({ length: 10, numbers: true }),
+        password:  hashedPassword,
       })
       .onConflict(["email"])
       .merge(['role']);
-      // on envoie le mot de passe généré par email : à changer après première connexion
-      const pass =  await dbClient(USER_ROLE).where({ email: user.email}).select("password").first(); // remplacer par generatePassword 
-      return pass.password;
+      return plainPassword;
   }
 
   async getAllUsers(): Promise<UserRow[]> {
@@ -77,8 +69,8 @@ export class UserService {
     return await dbClient(USER).where({ code: userId }).first();
   };
 
-  async getUserRoleById(userEmail: string, userPassword: string): Promise<UserRoleRow> {
-    return await dbClient(USER_ROLE).where({ email: userEmail , password: userPassword }).first();
+  async getUserRoleById(userEmail: string): Promise<UserRoleRow> {
+    return await dbClient(USER_ROLE).where({ email: userEmail}).first();
   };
 
 }
