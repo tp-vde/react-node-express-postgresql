@@ -12,6 +12,6 @@
       "resolveJsonModule": true,
       "isolatedModules": true
     },
-    "include": ["**/*.ts", "packages/backend/src/*", "packages/app/src/components/defaultComponentThemes.ts.old"],
+    "include": ["**/*.ts", "packages/backend/src/*", "packages/app/src/components/defaultComponentThemes.ts.old", "packages/backend/src/config/hostConfig.ts.old"],
     "exclude": ["node_modules"]
   }

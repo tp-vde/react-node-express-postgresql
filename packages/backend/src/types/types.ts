@@ -1,5 +1,3 @@
-import winston from "winston";
-
 export interface UserRow {
   id:string;
   last_name: string;
@@ -41,9 +39,8 @@ export function formatDate(nwdate: Date) {
   return `${day}-${month}-${year}`;
 }
 
-
 export interface IUserData {
-  exp: any;
+  // exp: any;
   email: string;
   role: string;
   password: string;
@@ -57,3 +54,7 @@ export type IAuthRequest = IRequestUser & {
   headers: { authorization: string };
 };
 
+export type ServiceJwt = {
+  secret: string,
+  expirationTime: string;
+};

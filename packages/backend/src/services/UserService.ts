@@ -1,9 +1,9 @@
-import { formatDate, UserRoleRow, UserRow } from '../types/types';
+import { formatDate, UserRoleRow, UserRow } from '../types/types.js';
 import knex from 'knex';
-import config from '../utils/knexConnect';
+import config from '../utils/knexConnect.js';
 import { v4 as uuid } from 'uuid';
-
-var generator = require('generate-password');
+import generator from 'generate-password';
+import bcrypt from 'bcrypt';
 
 const USER = 'users';
 const USER_ROLE = 'user_roles';
@@ -31,16 +31,18 @@ export class UserService {
       .onConflict(["email", 'phone'])
       .merge();
 
+    const plainPassword: any = generator.generate({ length: 12, numbers: true });
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(plainPassword, salt);
     await dbClient(USER_ROLE)
       .insert({
         email: user.email,
         role: user.role,
-        password:  generator.generate({ length: 10, numbers: true }),
+        password:  hashedPassword,
       })
       .onConflict(["email"])
       .merge(['role']);
-      const pass =  await dbClient(USER_ROLE).where({ email: user.email}).select("password").first(); 
-      return pass.password;
+      return plainPassword;
   }
 
   async getAllUsers(): Promise<UserRow[]> {
@@ -67,8 +69,8 @@ export class UserService {
     return await dbClient(USER).where({ code: userId }).first();
   };
 
-  async getUserRoleById(userEmail: string, userPassword: string): Promise<UserRoleRow> {
-    return await dbClient(USER_ROLE).where({ email: userEmail , password: userPassword }).first();
+  async getUserRoleById(userEmail: string): Promise<UserRoleRow> {
+    return await dbClient(USER_ROLE).where({ email: userEmail}).first();
   };
 
 }

@@ -64,8 +64,6 @@ function AdminPage() {
   }, []);
 
   const fetchStudents = async () => {
-    console.log("isExpired::", accountSrevice.isExpired());
-
     try {
       const response = await apiService.getStudentData();
       setRows(response);

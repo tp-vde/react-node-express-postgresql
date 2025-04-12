@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 22"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "start": "concurrently \"yarn start:app --delay 5\"  \"yarn start:back\"",
@@ -13,7 +13,10 @@
     "all:start": "yarn tsc && yarn lint && yarn start",
     "tsc": "yarn workspace backend tsc && yarn workspace app tsc",
     "lint": "yarn workspace backend lint && yarn workspace app lint",
-    "test": "mocha --exit tests/*"
+    "test": "mocha --exit tests/*",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down"
   },
   "workspaces": {
     "packages": [

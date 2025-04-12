@@ -1,10 +1,10 @@
-import MigrationManager from './utils/MigrationManager';
+import MigrationManager from './utils/MigrationManager.js';
 import express from 'express';
-import { createRouter } from './routes/router';
-import { ConfigReader } from "./config/ConfigReader";
-import { fileConfig } from "./config/paths";
-import { readHttpServerOptions } from "./config/hostConfig";
-import { loggerService } from './utils/logger';
+import { createRouter } from './routes/router.js';
+import { ConfigReader } from "./config/ConfigReader.js";
+import { fileConfig } from "./config/paths.js";
+import { readHttpServerOptions } from "./config/hostConfig.js";
+import { loggerService } from './utils/logger.js';
 import bodyParser from 'body-parser';
 
 

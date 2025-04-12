@@ -115,39 +115,47 @@ La création de nouveaux fichiers de migration peut être réalisée en exécuta
 ## Generate a JWT Secret : 
 Le lien `https://jwtsecret.com/generate` permet de generer une Clé secrète pour JWT
 <!-- ///////////////////////////
+Nettoyage complet (le plus simple)
+docker system prune -a --volumes
+docker system prune -a --volumes --force
+
 Erreur : exec /app/entrypoint.sh: no such file or directory => assurez-vous que le fichier entrypoint.sh utilise des fins de ligne Unix (LF) et non Windows (CRLF).
 yarn cache clean --force
 rm -rf node_modules yarn.lock  # (Sous Linux/macOS)
 chmod 755 nodce_modules
 rmdir /s /q node_modules & del yarn.lock  # (Sous Windows CMD)
+ou
+cmd.exe /c "@for /d /r . %d in (node_modules) do @if exist %d (echo "%d" && rd "%d" /s /q)" 
 yarn install
 
-chmod -R 755 node_modules
+yarn config set registry https://yarn.npmjs.org
 
 Les droits d’exécution : chmod +x packages/backend/entrypoint.sh 
 "start": "cross-env PORT=3000 react-scripts start",
+npm audit fix --force
+##################################
+
+Arrêtez tous les conteneurs :
+docker-compose down
+
+Nettoyez les volumes (attention : supprime les données) :
+docker-compose down -v
+
+Reconstruisez et relancez :
+docker-compose build --no-cache
+docker-compose up -d
+
+Vérifiez l'état :
+docker-compose ps
+
+Accédez au conteneur en mode interactif :
+docker-compose run --service-ports api bash
+
+docker-compose build  puis docker-compose up backend
+
+docker-compose build --no-cache backend
 
 
-Tache : 
-1- Sécurisez l’accès à une application en utilisant l’authentification et l'autorisation.
-2- Création de la Table d'administration pour gerer les accès à la page d'acceuil :
-    - ID => number
-    - Nom => nom de l'utilisateur
-    - Prenom
-    - Email
-    - Role : {'1', '2', '3'} => enum
-    - Password
-    - created_at, 
-    - updated_at
-
-
-Table de role
-id, name
-
-1- user
-2- moderator
-3- admin
-
-Table user_roles
-role_id, user_id
+Vérifier les processus en cours : # Dans votre conteneur => docker-compose exec app netstat -tulnp
+Forcer l'arrêt du processus : docker-compose exec app pkill -f "node.*7007"
 -->

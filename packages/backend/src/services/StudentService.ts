@@ -1,6 +1,6 @@
-import { formatDate, StudentRow } from '../types/types';
+import { formatDate, StudentRow } from '../types/types.js';
 import knex from 'knex';
-import config from '../utils/knexConnect';
+import config from '../utils/knexConnect.js';
 
 const TABLE = 'students';
 const dbClient = knex({

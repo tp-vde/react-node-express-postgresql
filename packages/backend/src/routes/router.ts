@@ -1,13 +1,14 @@
 import express , { Request, Response } from "express";
 import Router from "express-promise-router";
-import { UserService } from "../services";
-import { StudentRow, UserRoleRow, UserRow } from "../types/types";
-import { corsMiddleware } from "../utils/cors";
+import bcrypt from 'bcrypt';
+import { UserService } from "../services/UserService.js";
+import { StudentRow, UserRow } from "../types/types.js";
+import { corsMiddleware, sessionMiddleware } from "../utils/cors.js";
 import * as winston from "winston";
 import bodyParser from "body-parser";
-import { authMiddleware, generateToken } from "../ahuth/authMiddleware";
-import { StudentService } from "../services/StudentService";
-import { mailOptions, sendMail } from "../notifications/sendmail";
+import { authMiddleware, generateAccessToken } from "../middlewares/auth.js";
+import { StudentService } from "../services/StudentService.js";
+import { mailOptions, sendEmail } from "../notifications/sendmail.js";
 
 export type RouterOptions = {
   logger: winston.Logger;
@@ -23,6 +24,7 @@ export function createRouter(options: RouterOptions): express.Router {
   const router = Router();
   router.use(express.json());
   router.use(corsMiddleware());
+  router.use(sessionMiddleware());
   router.use(bodyParser.urlencoded({ extended: false }));
   router.use(bodyParser.json());
 
@@ -37,11 +39,11 @@ export function createRouter(options: RouterOptions): express.Router {
   /**
    * Route d'inscription des utilisateurs en base
    */
-  router.post("/user", authMiddleware(['admin']), async (req: Request, res: Response): Promise<any>  => {
+  router.post("/user", async (req: Request, res: Response): Promise<any>  => {
     try {
       const password = await userService.createUser(req.body);
       const options = { ...mailOptions,  to: req.body.email, html: `<p>Veuillez trouver votre mot de passe ci-après : ${password}</p>` };
-      await sendMail(options);
+      await sendEmail(options);
       res.status(201).json({ message: "Utilisateur créé avec succès" });
       logger.info(`Utilisateur créé avec succès :: ${req.body.first_name} ${req.body.last_name}`
       );
@@ -50,19 +52,29 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
-  // Route de connexion
   router.post("/login", async (req: any, res: any) => {
     const { email, password } = req.body;
-    const user = await userService.getUserRoleById(email, password);
-    if (!user) {
+    const user = await userService.getUserRoleById(email);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({ message: "Identifiants invalides" });
     }
 
-    const token = await generateToken(user);
+    const token = await generateAccessToken(user);
     res.json({ message: "Connexion réussie", token });
   });
 
-  // Route protégée pour les utilisateurs
+  router.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+      if (err) {
+        return res.status(500).json({ message: 'Erreur lors de la déconnexion ou aucune session active' });
+      }
+      res.clearCookie('connect.sid'); // Nom du cookie de session
+      res.json({ message: 'Déconnexion réussie' });
+    });
+  });
+
+
   router.get('/users', authMiddleware(['user', 'admin']), async (_req, res) => {
     try {
       const users: UserRow[] = await userService.getAllUsers();
@@ -85,7 +97,6 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
-  // Route protégée : accès seulement si l'utilisateur est authentifié
   router.get("/profile", (req: any, res: any) => {
     res.json({
       message: "Bienvenue sur votre profil",
