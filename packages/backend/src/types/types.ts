@@ -40,7 +40,7 @@ export function formatDate(nwdate: Date) {
 }
 
 export interface IUserData {
-  exp: any;
+  // exp: any;
   email: string;
   role: string;
   password: string;
@@ -54,3 +54,7 @@ export type IAuthRequest = IRequestUser & {
   headers: { authorization: string };
 };
 
+export type ServiceJwt = {
+  secret: string,
+  expirationTime: string;
+};

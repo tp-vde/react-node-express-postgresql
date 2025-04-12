@@ -27,11 +27,30 @@ backend:
     # connection: ':memory:'
     client: pg
     connection:
-      host: 'localhost'
+      host: db
+      user: user
+      password: password
+      database: postgres
       port: 5432
-      user: postgres
-      password: postgres
+      # domain: string;
+      # instanceName: string;
+      # debug: boolean;
+      # requestTimeout: number;
+
+      
+    pool: 
+      min: 2
+      max: 10
+    migrations:
+      directory: './migrations'
+    seeds:
+      directory: './seeds'
+
+
   auth:
+    keys:
+      secret: 3e7b760bf15487a189971d06dbe008dd26ca7cd3c856dd7ead1ae800efda917af2c2194c77fce6f5b2e38dc762ef61a3d578636150b34b937fd7ba8fd72582a3
+      expirationTime: '1h'
   # dangerouslyDisableDefaultAuthPolicy: true
   #   keys:
   #     - secret: ${BACKEND_SECRET}

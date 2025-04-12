@@ -52,7 +52,6 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
-  // Route de connexion
   router.post("/login", async (req: any, res: any) => {
     const { email, password } = req.body;
     const user = await userService.getUserRoleById(email);
@@ -65,7 +64,6 @@ export function createRouter(options: RouterOptions): express.Router {
     res.json({ message: "Connexion réussie", token });
   });
 
-  // Route de déconnexion
   router.post('/logout', (req, res) => {
     req.session.destroy(err => {
       if (err) {
@@ -76,7 +74,7 @@ export function createRouter(options: RouterOptions): express.Router {
     });
   });
 
-  // Route protégée pour les utilisateurs
+
   router.get('/users', authMiddleware(['user', 'admin']), async (_req, res) => {
     try {
       const users: UserRow[] = await userService.getAllUsers();
@@ -99,11 +97,10 @@ export function createRouter(options: RouterOptions): express.Router {
     }
   });
 
-  // Route protégée : accès seulement si l'utilisateur est authentifié
-  router.get("/profile", authMiddleware(['user', 'admin']),(req: any, res: any) => {
+  router.get("/profile", (req: any, res: any) => {
     res.json({
       message: "Bienvenue sur votre profil",
-      user: {...req.user, password: undefined , exp: undefined , iat: undefined},
+      user: req.user,
     });
   });
 
