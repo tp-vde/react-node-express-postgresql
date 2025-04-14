@@ -60,7 +60,7 @@ COPY --from=backend-builder /app/packages/backend/package.json ./backend/
 COPY app-config.yaml ./backend/
 
 # Installer NGINX 
-RUN apk add --no-cache nginx
+RUN apk add --no-cache nginx (serveur Web)
 
 # Installer Node.js pour exécuter le backend
 RUN apk add --no-cache nodejs
