@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: db
     ports:
       - 5432:5432
+    networks:
+      - bp-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -35,9 +37,13 @@ services:
     ports:
       - "3000:3000"
       - "7007:7007"
+    networks:
+      - bp-network
     depends_on:
       db:
         condition: service_healthy
+    links:
+      - db
 
   pgadmin:
     image: dpage/pgadmin4
@@ -53,9 +59,14 @@ services:
       - ./servers.json:/pgadmin4/servers.json 
     depends_on:
       - db
+    networks:
+      - bp-network
 
 # Volume pour persister les données de PostgreSQL et pour acceder à pgadmin4
 volumes:
   postgres_data:
   pgadmin_data:
 
+networks:
+  bp-network:
+    driver: bridge

@@ -115,6 +115,7 @@ La création de nouveaux fichiers de migration peut être réalisée en exécuta
 ## Generate a JWT Secret : 
 Le lien `https://jwtsecret.com/generate` permet de generer une Clé secrète pour JWT
 <!-- ///////////////////////////
+nettoyer le système: docker system prune
 Nettoyage complet (le plus simple)
 docker system prune -a --volumes
 docker system prune -a --volumes --force
@@ -158,4 +159,6 @@ docker-compose build --no-cache backend
 
 Vérifier les processus en cours : # Dans votre conteneur => docker-compose exec app netstat -tulnp
 Forcer l'arrêt du processus : docker-compose exec app pkill -f "node.*7007"
+
+ngrok http http://localhost:8080
 -->

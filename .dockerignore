@@ -2,9 +2,11 @@ node_modules
 **/node_modules
 **/build
 **/dist
-# yarn.lock
 .dockerignore
 .git
 .gitignore
 .vscode
-# .env
+# .yarn/cache
+# .yarn/install-state.gz
+# packages/*/src
+# packages/*/node_modules

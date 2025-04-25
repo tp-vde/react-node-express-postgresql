@@ -5,11 +5,12 @@ WORKDIR /app
 # Copier les fichiers nécessaires pour le backend
 COPY package.json yarn.lock ./
 COPY packages/backend/package.json packages/backend/
+COPY packages/backend/tsconfig.json packages/backend/
 COPY packages/app/package.json packages/app/
+COPY packages/app/tsconfig.json packages/app/
 
 # Installer toutes les dépendances (y compris devDependencies)
-RUN yarn install --frozen-lockfile --production=false
-
+RUN yarn install --immutable
 # Copier le reste des fichiers backend
 COPY packages/backend packages/backend
 COPY tsconfig.json .
@@ -26,7 +27,7 @@ COPY --from=backend-builder /app/package.json /app/yarn.lock ./
 COPY --from=backend-builder /app/packages/app/package.json packages/app/
 
 # Installer les dépendances du frontend
-RUN yarn install --frozen-lockfile
+RUN yarn install --immutable
 
 # Copier le reste des fichiers frontend
 COPY packages/app packages/app
@@ -40,7 +41,7 @@ FROM node:21-alpine AS production-deps
 WORKDIR /app
 COPY package.json yarn.lock ./
 COPY packages/backend/package.json packages/backend/
-RUN yarn install --frozen-lockfile --production
+RUN yarn install --immutable --production
 
 # Image de production
 FROM nginx:alpine
@@ -59,8 +60,8 @@ COPY --from=backend-builder /app/packages/backend/migrations ./backend/migration
 COPY --from=backend-builder /app/packages/backend/package.json ./backend/
 COPY app-config.yaml ./backend/
 
-# Installer NGINX 
-RUN apk add --no-cache nginx (serveur Web)
+# Installer NGINX  (serveur Web)
+RUN apk add --no-cache nginx
 
 # Installer Node.js pour exécuter le backend
 RUN apk add --no-cache nodejs
@@ -76,5 +77,7 @@ EXPOSE 7007 3000
 
 # Commande pour démarrer à la fois Nginx et le backend Node.js
 COPY entrypoint.sh /entrypoint.sh
+# Convert CRLF to LF
+RUN sed -i 's/\r$//' /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

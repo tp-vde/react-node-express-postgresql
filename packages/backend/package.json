@@ -2,7 +2,6 @@
   "name": "backend",
   "description": "Monorepo with React frontend and Node Express backend",
   "version": "0.0.0",
-  "private": "true",
   "main": "dist/server.js",
   "type": "module",
   "engines": {
